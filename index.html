@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>每天精读一本书</title>
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="header-issue">DAILY READING · Vol. 2026</div>
+        <h1 class="site-title">每天精读一本书</h1>
+        <p class="site-tagline">每天精读一本书，与智慧同行</p>
+      </div>
+      <div class="header-right">
+        <div class="header-date" id="headerDate"></div>
+        <nav class="header-nav">
+          <a href="#">书单</a>
+          <a href="#">播客</a>
+          <a href="#">关于</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-section" id="heroSection">
+      <div class="loading-state">正在加载今日推荐...</div>
+    </section>
+
+    <section class="books-section">
+      <div class="section-header">
+        <span class="section-label">ARCHIVE</span>
+        <h2 class="section-title">往期书单</h2>
+      </div>
+      <div class="books-grid" id="booksGrid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">每天精读一本书</p>
+      <p class="footer-sub">每天一本，与智慧同行 · <span id="footerYear"></span></p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
