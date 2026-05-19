@@ -387,65 +387,79 @@ body {
 
 /* ── Search & Filter ── */
 .search-filter-bar {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .search-box {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: var(--card-bg);
   border: 1.5px solid var(--border);
-  padding: 10px 14px;
-  transition: border-color 0.2s;
+  padding: 0 16px;
+  height: 48px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-box:focus-within {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139,26,26,0.07);
 }
 
 .search-box svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   color: var(--text-light);
   flex-shrink: 0;
+  display: block;
 }
 
 .search-box input {
   flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
   background: transparent;
   font-family: var(--font-sans);
   font-size: 14px;
+  line-height: 1;
   color: var(--text-primary);
+  height: 100%;
 }
 
-.search-box input::placeholder {
-  color: var(--text-light);
-}
+.search-box input::placeholder { color: var(--text-light); }
 
 .search-clear {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-light);
-  font-size: 12px;
-  padding: 2px 4px;
+  font-size: 13px;
+  width: 20px;
+  height: 20px;
   display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   transition: color 0.2s;
+  padding: 0;
 }
 
 .search-clear:hover { color: var(--accent); }
-.search-clear.visible { display: block; }
+.search-clear.visible { display: flex; }
 
 .filter-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
 }
 
 .filter-chip {
@@ -458,6 +472,7 @@ body {
   font-family: var(--font-sans);
   letter-spacing: 0.04em;
   transition: all 0.18s;
+  line-height: 1.4;
 }
 
 .filter-chip:hover {
@@ -480,7 +495,6 @@ body {
 }
 
 .empty-search {
-  grid-column: 1 / -1;
   text-align: center;
   padding: 60px 0;
   color: var(--text-light);
