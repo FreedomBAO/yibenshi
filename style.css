@@ -385,6 +385,110 @@ body {
 
 .pdf-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 
+/* ── Search & Filter ── */
+.search-filter-bar {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  padding: 10px 14px;
+  transition: border-color 0.2s;
+}
+
+.search-box:focus-within {
+  border-color: var(--accent);
+}
+
+.search-box svg {
+  width: 15px;
+  height: 15px;
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.search-box input::placeholder {
+  color: var(--text-light);
+}
+
+.search-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 12px;
+  padding: 2px 4px;
+  display: none;
+  transition: color 0.2s;
+}
+
+.search-clear:hover { color: var(--accent); }
+.search-clear.visible { display: block; }
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  font-size: 12px;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  letter-spacing: 0.04em;
+  transition: all 0.18s;
+}
+
+.filter-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.filter-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.archive-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-light);
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+
+.empty-search {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 0;
+  color: var(--text-light);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
 /* ── Books Section ── */
 .books-section {
   max-width: 1200px;

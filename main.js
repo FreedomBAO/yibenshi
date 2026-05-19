@@ -78,35 +78,95 @@ function renderHero(book) {
     </div>`;
 }
 
+function bookCardHtml(book, i) {
+  const color = colorForId(book.id);
+  const delay = (i * 0.08).toFixed(2);
+  return `
+    <div class="book-card" style="animation-delay:${delay}s">
+      <div class="card-color-block" style="background:${color}">
+        <div class="card-book-index">${String(book.id).padStart(2, '0')}</div>
+        <div class="card-title-in-block">
+          <div class="card-book-title">${book.title}</div>
+          <div class="card-book-author">${book.author}</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-date">${formatDate(book.date)}</div>
+        <div class="card-description">${book.description}</div>
+        <div class="card-tags">${tagsHtml(book.tags, 'tag-chip')}</div>
+        <div class="card-actions">
+          ${audioPlayerHtml(book)}
+          ${pdfBtnHtml(book)}
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderArchive(books) {
   const grid = document.getElementById('booksGrid');
   if (!books.length) {
     grid.innerHTML = '<p class="empty-archive">暂无往期书单</p>';
     return;
   }
-  grid.innerHTML = books.map((book, i) => {
-    const color = colorForId(book.id);
-    const delay = (i * 0.08).toFixed(2);
-    return `
-      <div class="book-card" style="animation-delay:${delay}s">
-        <div class="card-color-block" style="background:${color}">
-          <div class="card-book-index">${String(book.id).padStart(2, '0')}</div>
-          <div class="card-title-in-block">
-            <div class="card-book-title">${book.title}</div>
-            <div class="card-book-author">${book.author}</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-date">${formatDate(book.date)}</div>
-          <div class="card-description">${book.description}</div>
-          <div class="card-tags">${tagsHtml(book.tags, 'tag-chip')}</div>
-          <div class="card-actions">
-            ${audioPlayerHtml(book)}
-            ${pdfBtnHtml(book)}
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+  grid.innerHTML = books.map((book, i) => bookCardHtml(book, i)).join('');
+}
+
+function renderFilterChips(archiveBooks) {
+  const tags = [...new Set(archiveBooks.flatMap(b => b.tags))].sort();
+  const container = document.getElementById('filterChips');
+  container.innerHTML = `
+    <button class="filter-chip active" data-tag="">全部</button>
+    ${tags.map(t => `<button class="filter-chip" data-tag="${t}">${t}</button>`).join('')}
+  `;
+  container.addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    container.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter();
+  });
+}
+
+let _archiveBooks = [];
+let _activeTag = '';
+let _searchQuery = '';
+
+function applyFilter() {
+  const chip = document.querySelector('.filter-chip.active');
+  _activeTag = chip ? chip.dataset.tag : '';
+  _searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+
+  let filtered = _archiveBooks;
+  if (_activeTag) {
+    filtered = filtered.filter(b => b.tags.includes(_activeTag));
+  }
+  if (_searchQuery) {
+    filtered = filtered.filter(b =>
+      b.title.toLowerCase().includes(_searchQuery) ||
+      (b.originalTitle || '').toLowerCase().includes(_searchQuery) ||
+      b.author.toLowerCase().includes(_searchQuery) ||
+      b.description.toLowerCase().includes(_searchQuery)
+    );
+  }
+
+  renderArchive(filtered);
+  document.getElementById('archiveCount').textContent = `${filtered.length} 本`;
+  document.getElementById('emptySearch').style.display = filtered.length ? 'none' : 'block';
+  document.getElementById('booksGrid').style.display = filtered.length ? '' : 'none';
+}
+
+function initSearch() {
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('searchClear');
+  input.addEventListener('input', () => {
+    clearBtn.classList.toggle('visible', input.value.length > 0);
+    applyFilter();
+  });
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.classList.remove('visible');
+    applyFilter();
+  });
 }
 
 // Audio state
@@ -208,10 +268,12 @@ function init() {
 
   const books = BOOKS_DATA.slice().sort((a, b) => b.date.localeCompare(a.date));
   const todayBook = books.find(b => b.date === today) || books[0];
-  const archiveBooks = books.filter(b => b !== todayBook);
+  _archiveBooks = books.filter(b => b !== todayBook);
 
   renderHero(todayBook);
-  renderArchive(archiveBooks);
+  renderFilterChips(_archiveBooks);
+  initSearch();
+  applyFilter();
 }
 
 init();
