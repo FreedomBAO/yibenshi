@@ -346,6 +346,16 @@ body {
   position: relative;
 }
 
+/* 扩大点击热区到 18px，视觉上保持 2px */
+.audio-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+}
+
 .audio-progress-fill {
   height: 100%;
   background: var(--accent);
@@ -722,4 +732,303 @@ body {
   .books-grid { grid-template-columns: 1fr; }
   .site-title { font-size: 22px; }
   .hero-description { font-size: 15px; }
+}
+
+/* ── Refresh Button (换一本) ── */
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 4px 12px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.2s;
+  font-family: var(--font-display);
+}
+.refresh-btn:hover {
+  background: var(--accent);
+  color: white;
+}
+.refresh-btn svg {
+  width: 11px;
+  height: 11px;
+  transition: transform 0.4s;
+}
+.refresh-btn:hover svg {
+  transform: rotate(180deg);
+}
+
+/* ── Share Button ── */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1.5px solid var(--text-secondary);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  width: fit-content;
+}
+.share-btn:hover {
+  background: var(--text-secondary);
+  color: white;
+  border-color: var(--text-secondary);
+}
+.share-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+/* ── Share Modal ── */
+.share-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease;
+}
+.share-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+.share-modal-content {
+  position: relative;
+  background: var(--card-bg);
+  padding: 36px 32px 32px;
+  max-width: 460px;
+  width: 92%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  animation: modalSlideUp 0.3s ease;
+}
+.share-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-light);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+.share-modal-close:hover { color: var(--text-primary); }
+.share-modal-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.share-modal-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+.share-modal-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: background 0.2s;
+}
+.share-modal-btn:hover:not(:disabled) {
+  background: var(--accent-light);
+}
+.share-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Share Card Preview (1:1) ── */
+.share-card-preview {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+.share-card-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 11px
+  );
+}
+.share-card-preview::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+}
+.share-card-inner {
+  position: relative;
+  z-index: 2;
+  padding: 36px 32px;
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.share-card-brand {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+}
+.share-card-no {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.18);
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  line-height: 1;
+}
+.share-card-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.share-card-original {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4px;
+}
+.share-card-author {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+.share-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.share-card-tag {
+  font-size: 10px;
+  padding: 3px 9px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.share-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.05em;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 12px;
+}
+.share-card-rating {
+  color: rgba(255, 220, 120, 0.95);
+  font-weight: 600;
+}
+
+/* ── Coming Soon Toast ── */
+.coming-soon-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #141410;
+  color: #F4EFE6;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  border-left: 3px solid var(--accent);
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  max-width: 92vw;
+}
+.coming-soon-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast-icon {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--accent-light);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.toast-text { line-height: 1.4; }
+.toast-title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.toast-sub {
+  font-size: 11px;
+  color: rgba(244, 239, 230, 0.6);
+  letter-spacing: 0.04em;
 }
