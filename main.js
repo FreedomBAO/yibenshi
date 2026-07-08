@@ -1,7 +1,60 @@
 /* ──────────────────────────────────────────────────
-   每天精读一本书 - 主脚本
+   每天精读一本书 - 主脚本 v2
    功能：今日推荐 / 搜索筛选 / 音频播放 / 换一本 / 分享卡片
+        / 详情弹窗 / 主题切换 / 键盘快捷键
    ────────────────────────────────────────────────── */
+
+/* ── 主题定义 ── */
+const THEMES = {
+  default: {
+    name: '晨读·米色',
+    '--bg':            '#F4EFE6',
+    '--card-bg':       '#FFFFFF',
+    '--header-bg':     '#141410',
+    '--accent':        '#8B1A1A',
+    '--accent-light':  '#B52828',
+    '--text-primary':  '#1C1C1A',
+    '--text-secondary':'#6B6560',
+    '--text-light':    '#9B9590',
+    '--border':        '#E0D9CF',
+  },
+  forest: {
+    name: '林间·森绿',
+    '--bg':            '#E8EFE5',
+    '--card-bg':       '#FFFFFF',
+    '--header-bg':     '#1A2E1F',
+    '--accent':        '#2D5A3D',
+    '--accent-light':  '#3E7A52',
+    '--text-primary':  '#1A2418',
+    '--text-secondary':'#5A6358',
+    '--text-light':    '#8A938A',
+    '--border':        '#D0D9CD',
+  },
+  ocean: {
+    name: '夜读·深蓝',
+    '--bg':            '#EEF2F7',
+    '--card-bg':       '#FFFFFF',
+    '--header-bg':     '#0F1A2E',
+    '--accent':        '#1E4A8C',
+    '--accent-light':  '#2A6BC2',
+    '--text-primary':  '#0F1A2E',
+    '--text-secondary':'#5A6378',
+    '--text-light':    '#8A93A8',
+    '--border':        '#D2D9E4',
+  },
+  sunset: {
+    name: '活力·暖橙',
+    '--bg':            '#FDF3EC',
+    '--card-bg':       '#FFFFFF',
+    '--header-bg':     '#2E1A14',
+    '--accent':        '#D9542C',
+    '--accent-light':  '#F26A3A',
+    '--text-primary':  '#1F1410',
+    '--text-secondary':'#6B554E',
+    '--text-light':    '#9A847C',
+    '--border':        '#E8D8CC',
+  },
+};
 
 const PALETTE = [
   '#5C3D2E', '#2C4A3E', '#2E3A5C', '#4A2C4E',
@@ -21,9 +74,58 @@ function tagsHtml(tags, cls = 'tag-chip') {
   return tags.map(t => `<span class="${cls}">${t}</span>`).join('');
 }
 
+/* ── 主题切换 ── */
+function applyTheme(themeName) {
+  const theme = THEMES[themeName] || THEMES.default;
+  const root = document.documentElement;
+  Object.entries(theme).forEach(([k, v]) => {
+    if (k !== 'name') root.style.setProperty(k, v);
+  });
+  localStorage.setItem('yibenshi-theme', themeName);
+  // 更新按钮状态
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === themeName);
+  });
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('yibenshi-theme') || 'default';
+  applyTheme(saved);
+}
+
+function renderThemeSwitcher() {
+  const container = document.getElementById('themeSwitcher');
+  if (!container) return;
+  container.innerHTML = Object.entries(THEMES).map(([key, t]) =>
+    `<button class="theme-btn ${key === 'default' ? 'active' : ''}" data-theme="${key}" onclick="applyTheme('${key}')" aria-label="${t.name}" title="${t.name}">
+      <span class="theme-swatch" style="background:${t['--accent']}"></span>
+      <span class="theme-name">${t.name}</span>
+    </button>`
+  ).join('');
+}
+
 /* ── Audio Player ── */
 function audioPlayerHtml(book, prefix = '') {
   const id = `player-${prefix}${book.id}`;
+  const audioUrl = book.audio || book.audioUrl;
+  // 如果有真实音频文件，用真实播放；否则显示 Coming Soon
+  const hasReal = audioUrl && !audioUrl.endsWith('.mp3') === false;
+  if (hasReal) {
+    return `
+      <div class="audio-player" id="${id}">
+        <button class="play-btn" onclick="togglePlay('${id}', '${audioUrl}', '${book.duration}')" aria-label="播放/暂停">
+          <svg class="icon-play" viewBox="0 0 16 16"><polygon points="3,1 15,8 3,15"/></svg>
+          <svg class="icon-pause" viewBox="0 0 16 16"><rect x="2" y="1" width="4" height="14"/><rect x="10" y="1" width="4" height="14"/></svg>
+        </button>
+        <div class="audio-info">
+          <div class="audio-label">精读音频</div>
+          <div class="audio-progress-bar" onclick="seekAudio(event, '${id}')">
+            <div class="audio-progress-fill" id="${id}-fill"></div>
+          </div>
+        </div>
+        <div class="audio-duration" id="${id}-time">${book.duration}</div>
+      </div>`;
+  }
   return `
     <div class="audio-player" id="${id}">
       <button class="play-btn" onclick="showComingSoon('${book.title} 的精读音频')" aria-label="播放/暂停">
@@ -40,6 +142,19 @@ function audioPlayerHtml(book, prefix = '') {
     </div>`;
 }
 
+/* ── 详情按钮 ── */
+function detailBtnHtml(book) {
+  return `
+    <button class="detail-btn" onclick="openDetailModal(${book.id})" aria-label="查看详情">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="8" cy="8" r="6"/>
+        <line x1="8" y1="6" x2="8" y2="11"/>
+        <circle cx="8" cy="4" r="0.5" fill="currentColor"/>
+      </svg>
+      查看详情
+    </button>`;
+}
+
 /* ── 分享按钮 ── */
 function shareBtnHtml(book) {
   return `
@@ -54,6 +169,19 @@ function shareBtnHtml(book) {
 
 /* ── PDF 按钮 ── */
 function pdfBtnHtml(book) {
+  const pdfUrl = book.pdf || book.pdfUrl;
+  if (pdfUrl) {
+    return `
+      <a class="pdf-btn" href="${pdfUrl}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 1h7l3 3v11H3V1z"/>
+          <path d="M10 1v3h3"/>
+          <line x1="6" y1="8" x2="10" y2="8"/>
+          <line x1="6" y1="11" x2="10" y2="11"/>
+        </svg>
+        下载精读笔记
+      </a>`;
+  }
   return `
     <button class="pdf-btn" onclick="showComingSoon('${book.title} 的精读笔记 PDF')" aria-label="下载精读笔记">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -66,7 +194,7 @@ function pdfBtnHtml(book) {
     </button>`;
 }
 
-/* ── Hero 区 ── */
+/* ── Hero ── */
 function renderHero(book) {
   const section = document.getElementById('heroSection');
   const color = colorForId(book.id);
@@ -81,8 +209,8 @@ function renderHero(book) {
         换一本
       </button>
     </div>
-    <div class="hero-card">
-      <div class="hero-color-block" style="background:${color}">
+    <div class="hero-card" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
+      <div class="hero-color-block" style="background:${book.cover ? `url(${book.cover}) center/cover no-repeat` : color}">
         <div class="hero-book-number">${String(book.id).padStart(2, '0')}</div>
         <div class="hero-tag">今日精读</div>
         <div class="hero-title-block">
@@ -99,7 +227,7 @@ function renderHero(book) {
             <div class="tag-chips">${tagsHtml(book.tags)}</div>
           </div>
         </div>
-        <div class="hero-actions">
+        <div class="hero-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book, 'hero-')}
           ${pdfBtnHtml(book)}
           ${shareBtnHtml(book)}
@@ -114,13 +242,13 @@ function renderHero(book) {
   }
 }
 
-/* ── 卡片 ── */
+/* ── 卡片（卡片本身也可点击展开详情） ── */
 function bookCardHtml(book, i) {
   const color = colorForId(book.id);
   const delay = (i * 0.08).toFixed(2);
   return `
-    <div class="book-card" style="animation-delay:${delay}s">
-      <div class="card-color-block" style="background:${color}">
+    <div class="book-card" style="animation-delay:${delay}s" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
+      <div class="card-color-block" style="background:${book.cover ? `url(${book.cover}) center/cover no-repeat` : color}">
         <div class="card-book-index">${String(book.id).padStart(2, '0')}</div>
         <div class="card-title-in-block">
           <div class="card-book-title">${book.title}</div>
@@ -131,23 +259,46 @@ function bookCardHtml(book, i) {
         <div class="card-date">${formatDate(book.date)}</div>
         <div class="card-description">${book.description}</div>
         <div class="card-tags">${tagsHtml(book.tags, 'tag-chip')}</div>
-        <div class="card-actions">
+        <div class="card-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book)}
           ${pdfBtnHtml(book)}
           ${shareBtnHtml(book)}
+          ${detailBtnHtml(book)}
         </div>
       </div>
     </div>`;
 }
 
 /* ── 列表渲染 ── */
+const ARCHIVE_PAGE_SIZE = 20;
+function renderChunked(container, items, renderItem, opts = {}) {
+  const size = opts.pageSize || ARCHIVE_PAGE_SIZE;
+  let shown = Math.min(size, items.length);
+  const draw = () => {
+    const html = items.slice(0, shown).map(renderItem).join('');
+    const remaining = items.length - shown;
+    const btnHtml = remaining > 0
+      ? `<button type="button" class="chunk-toggle-btn" id="chunkToggle">▼ 显示下 ${Math.min(size, remaining)} 本（剩 ${remaining}）</button>`
+      : '';
+    container.innerHTML = html + btnHtml;
+    const btn = document.getElementById('chunkToggle');
+    if (btn) btn.onclick = () => { shown = Math.min(shown + size, items.length); draw(); };
+  };
+  draw();
+}
+
 function renderArchive(books) {
   const grid = document.getElementById('booksGrid');
   if (!books.length) {
-    grid.innerHTML = '<p class="empty-archive">暂无往期书单</p>';
+    grid.innerHTML = `
+      <div class="empty-archive-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;opacity:0.4;">📚</div>
+        <p style="font-family:var(--font-serif);font-size:16px;color:var(--text-secondary);margin-bottom:8px;">暂无匹配的书籍</p>
+        <p style="font-size:13px;color:var(--text-light);">试试其他关键词或标签</p>
+      </div>`;
     return;
   }
-  grid.innerHTML = books.map((book, i) => bookCardHtml(book, i)).join('');
+  renderChunked(grid, books, (book, i) => bookCardHtml(book, i));
 }
 
 /* ── 标签筛选 ── */
@@ -198,8 +349,8 @@ function applyFilter() {
 
   renderArchive(filtered);
   document.getElementById('archiveCount').textContent = `${filtered.length} 本`;
-  document.getElementById('emptySearch').style.display = filtered.length ? 'none' : 'block';
-  document.getElementById('booksGrid').style.display = filtered.length ? '' : 'none';
+  document.getElementById('emptySearch').style.display = 'none';
+  document.getElementById('booksGrid').style.display = '';
 }
 
 function initSearch() {
@@ -213,69 +364,11 @@ function initSearch() {
     input.value = '';
     clearBtn.classList.remove('visible');
     applyFilter();
+    input.focus();
   });
 }
 
-/* ── Audio 状态 ── */
-const audioState = {};
-
-function togglePlay(playerId, url, duration) {
-  const btn = document.querySelector(`#${playerId} .play-btn`);
-
-  if (!audioState[playerId]) {
-    audioState[playerId] = { audio: new Audio(url), duration };
-  }
-  const state = audioState[playerId];
-  const audio = state.audio;
-
-  if (audio.paused) {
-    Object.values(audioState).forEach(s => {
-      if (s !== state && !s.audio.paused) s.audio.pause();
-    });
-    document.querySelectorAll('.play-btn').forEach(b => b.classList.remove('playing'));
-    btn.classList.add('playing');
-    audio.play().catch(() => {
-      btn.classList.remove('playing');
-      console.warn('音频播放失败:', url);
-    });
-    audio.ontimeupdate = () => {
-      const fill = document.getElementById(`${playerId}-fill`);
-      const timeEl = document.getElementById(`${playerId}-time`);
-      if (!fill) return;
-      const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-      fill.style.width = pct + '%';
-      timeEl.textContent = fmtTime(audio.currentTime);
-    };
-    audio.onended = () => {
-      const endBtn = document.querySelector(`#${playerId} .play-btn`);
-      const fill = document.getElementById(`${playerId}-fill`);
-      const timeEl = document.getElementById(`${playerId}-time`);
-      if (endBtn) endBtn.classList.remove('playing');
-      if (fill) fill.style.width = '0%';
-      if (timeEl) timeEl.textContent = duration;
-    };
-  } else {
-    audio.pause();
-    btn.classList.remove('playing');
-  }
-}
-
-function seekAudio(e, playerId) {
-  const state = audioState[playerId];
-  if (!state || !state.audio.duration) return;
-  const bar = e.currentTarget;
-  const rect = bar.getBoundingClientRect();
-  const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-  state.audio.currentTime = ratio * state.audio.duration;
-}
-
-function fmtTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-}
-
-/* ── 换一本（Refresh Today's Pick） ── */
+/* ── 换一本 ── */
 function refreshToday() {
   if (!_allBooks.length) return;
   const candidates = _allBooks.filter(b => b.id !== (_todayBook && _todayBook.id));
@@ -287,21 +380,93 @@ function refreshToday() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ── 分享卡片（Share Card） ── */
+/* ──────────────────────────────────────
+   详情弹窗（Detail Modal）
+   ────────────────────────────────────── */
+function openDetailModal(bookId) {
+  const book = _allBooks.find(b => b.id === bookId);
+  if (!book) return;
+  closeAllModals();
+
+  const color = colorForId(book.id);
+  const modal = document.createElement('div');
+  modal.id = 'detailModal';
+  modal.className = 'share-modal';
+  modal.innerHTML = `
+    <div class="share-modal-backdrop" onclick="closeAllModals()"></div>
+    <div class="detail-modal-content" role="dialog" aria-modal="true">
+      <button class="share-modal-close" onclick="closeAllModals()" aria-label="关闭">✕</button>
+      <div class="detail-header" style="background:${color}">
+        <div class="detail-header-no">No.${String(book.id).padStart(2, '0')}</div>
+        <div class="detail-header-cat">${book.category || ''}</div>
+        <h2 class="detail-title">${book.title}</h2>
+        <div class="detail-original">${book.originalTitle || ''}</div>
+        <div class="detail-author">— ${book.author}</div>
+        <div class="detail-meta-row">
+          <span class="detail-date">${formatDate(book.date)}</span>
+          <span class="detail-rating">★ ${book.rating || '8.5'}</span>
+          <span class="detail-duration">🕐 ${book.duration}</span>
+        </div>
+      </div>
+      <div class="detail-body">
+        <section class="detail-section">
+          <h3 class="detail-section-title">深度书评</h3>
+          <p class="detail-description">${book.description}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3 class="detail-section-title">核心要点</h3>
+          <ul class="detail-highlights">
+            ${(book.highlights || []).map(h => `<li>${h}</li>`).join('')}
+          </ul>
+        </section>
+
+        <section class="detail-section detail-action-section">
+          <h3 class="detail-section-title">行动建议</h3>
+          <p class="detail-action">${book.action || '读完后，问自己：哪一点我今天就可以开始用？'}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3 class="detail-section-title">相关标签</h3>
+          <div class="detail-tags">${tagsHtml(book.tags, 'detail-tag')}</div>
+        </section>
+
+        <div class="detail-actions">
+          ${audioPlayerHtml(book, 'detail-')}
+          ${pdfBtnHtml(book)}
+          ${shareBtnHtml(book)}
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => modal.classList.add('visible'), 10);
+}
+
+function closeAllModals() {
+  document.querySelectorAll('.share-modal').forEach(m => {
+    m.classList.remove('visible');
+    setTimeout(() => m.remove(), 200);
+  });
+  document.body.style.overflow = '';
+}
+
+/* ──────────────────────────────────────
+   分享卡片（Share Card）
+   ────────────────────────────────────── */
 function openShareModal(bookId) {
   const book = _allBooks.find(b => b.id === bookId);
   if (!book) return;
-
-  const old = document.getElementById('shareModal');
-  if (old) old.remove();
+  closeAllModals();
 
   const modal = document.createElement('div');
   modal.id = 'shareModal';
   modal.className = 'share-modal';
   modal.innerHTML = `
-    <div class="share-modal-backdrop" onclick="closeShareModal()"></div>
+    <div class="share-modal-backdrop" onclick="closeAllModals()"></div>
     <div class="share-modal-content">
-      <button class="share-modal-close" onclick="closeShareModal()" aria-label="关闭">✕</button>
+      <button class="share-modal-close" onclick="closeAllModals()" aria-label="关闭">✕</button>
       <h3 class="share-modal-title">生成分享卡片</h3>
       <p class="share-modal-sub">点击下方按钮生成精美卡片，可保存或分享给朋友</p>
       <div class="share-card-preview" id="shareCardPreview" style="background:${colorForId(book.id)}">
@@ -324,33 +489,6 @@ function openShareModal(bookId) {
     </div>
   `;
   document.body.appendChild(modal);
-}
-
-function closeShareModal() {
-  const modal = document.getElementById('shareModal');
-  if (modal) modal.remove();
-}
-
-/* ── 友好提示（资源正在整理） ── */
-function showComingSoon(resourceName) {
-  const old = document.getElementById('comingSoonToast');
-  if (old) old.remove();
-  const toast = document.createElement('div');
-  toast.id = 'comingSoonToast';
-  toast.className = 'coming-soon-toast';
-  toast.innerHTML = `
-    <div class="toast-icon">✦</div>
-    <div class="toast-text">
-      <div class="toast-title">${resourceName || '资源'} 正在整理中</div>
-      <div class="toast-sub">公众号「每天精读一本书」回复书名优先获取</div>
-    </div>
-  `;
-  document.body.appendChild(toast);
-  requestAnimationFrame(() => toast.classList.add('visible'));
-  setTimeout(() => {
-    toast.classList.remove('visible');
-    setTimeout(() => toast.remove(), 300);
-  }, 2600);
 }
 
 function generateShareImage(bookId) {
@@ -391,6 +529,28 @@ function generateShareImage(bookId) {
   });
 }
 
+/* ── Coming Soon Toast ── */
+function showComingSoon(resourceName) {
+  const old = document.getElementById('comingSoonToast');
+  if (old) old.remove();
+  const toast = document.createElement('div');
+  toast.id = 'comingSoonToast';
+  toast.className = 'coming-soon-toast';
+  toast.innerHTML = `
+    <div class="toast-icon">✦</div>
+    <div class="toast-text">
+      <div class="toast-title">${resourceName || '资源'} 正在整理中</div>
+      <div class="toast-sub">公众号「每天精读一本书」回复书名优先获取</div>
+    </div>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('visible'));
+  setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => toast.remove(), 300);
+  }, 2600);
+}
+
 /* ── 键盘快捷键 ── */
 function bindKeyboardShortcuts() {
   document.removeEventListener('keydown', _keyboardHandler);
@@ -399,6 +559,10 @@ function bindKeyboardShortcuts() {
 
 function _keyboardHandler(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'Escape') {
+    closeAllModals();
+    return;
+  }
   if (e.key === ' ' || e.code === 'Space') {
     e.preventDefault();
     const player = document.querySelector('#heroSection .audio-player');
@@ -407,10 +571,13 @@ function _keyboardHandler(e) {
       if (btn) btn.click();
     }
   }
+  if (e.key === 'r' || e.key === 'R') {
+    refreshToday();
+  }
 }
 
 /* ──────────────────────────────────────
-   内置数据（兜底用，file:// 下 fetch 会被拦截）
+   内置数据（file:// 下 fetch 会被拦截）
    ────────────────────────────────────── */
 const BOOKS_DATA = [
   {
@@ -434,7 +601,8 @@ const BOOKS_DATA = [
       "人类95%的决策依赖系统1（直觉），理性思考是稀缺资源",
       "过度依赖系统1会引发大量认知偏差",
       "刻意引入慢思考的标准化流程反而能降低错误率"
-    ]
+    ],
+    "action": "本周做 1 个小决定时，刻意启动「慢思考」：列出 3 个支持/反对点再下结论。"
   },
   {
     "id": 2,
@@ -457,7 +625,8 @@ const BOOKS_DATA = [
       "梦想 + 现实 + 决心 = 成功",
       "痛苦 + 反思 = 进步",
       "极度求真、极度透明的决策文化"
-    ]
+    ],
+    "action": "从今天开始记录你做重大决策时的「原则」，一周后回看，沉淀你自己的判断框架。"
   },
   {
     "id": 3,
@@ -480,7 +649,8 @@ const BOOKS_DATA = [
       "身份认同驱动习惯，而非目标驱动",
       "环境设计 > 意志力消耗",
       "1% 的微小改进 × 365 天 = 37 倍提升"
-    ]
+    ],
+    "action": "选 1 个你想养成的微习惯，把它绑定到已有习惯后面（提示-渴求-反应-奖励）。"
   },
   {
     "id": 4,
@@ -503,7 +673,8 @@ const BOOKS_DATA = [
       "财富是睡着时仍能为你赚钱的资产",
       "代码和媒体是新一代「无需许可」的杠杆",
       "幸福是减去所有痛苦后的产物"
-    ]
+    ],
+    "action": "列出你最擅长的 3 件事，找到「杠杆点」——怎样用更少的努力换更大的复利。"
   },
   {
     "id": 5,
@@ -526,7 +697,8 @@ const BOOKS_DATA = [
       "高质量工作产出 = 时间 × 专注度²",
       "深度工作能力越来越稀缺，越来越有价值",
       "无聊不是敌人，而是深度思考的入口"
-    ]
+    ],
+    "action": "本周每天留 90 分钟「深度工作时间」：关微信、单任务、写下来要解决的问题。"
   },
   {
     "id": 6,
@@ -549,7 +721,8 @@ const BOOKS_DATA = [
       "系统三大构件：要素、连接、目标",
       "12 种系统反馈回路，决定长期行为",
       "找到杠杆点：以小博大改变系统"
-    ]
+    ],
+    "action": "找一个你正在解决的问题，画出它的反馈回路：谁是增强回路？谁是调节回路？"
   },
   {
     "id": 7,
@@ -572,7 +745,8 @@ const BOOKS_DATA = [
       "竞争是失败者的游戏，垄断是成功者的目标",
       "幂次法则：少数关键决策决定大部分结果",
       "Definite Optimism vs Indefinite Optimism"
-    ]
+    ],
+    "action": "思考你所在的领域，「从 0 到 1」的机会是什么？写下 3 个别人没看到的差异化。"
   },
   {
     "id": 8,
@@ -595,7 +769,8 @@ const BOOKS_DATA = [
       "历史不是「爬行」，而是「跳跃」",
       "不要预测，要对冲（杠铃策略）",
       "我们永远低估了未知的未知"
-    ]
+    ],
+    "action": "在你的生活/工作里，找出「最脆弱」的环节，给它加一道冗余（杠铃策略）。"
   },
   {
     "id": 9,
@@ -618,7 +793,8 @@ const BOOKS_DATA = [
       "课题分离：分清你的事 vs 别人的事",
       "重要的不是被给予了什么，而是如何利用",
       "人生不是一条线，而是连续刹那的舞蹈"
-    ]
+    ],
+    "action": "列出最近让你烦恼的 1 件事，问自己：「这到底是谁的事？」练习课题分离。"
   },
   {
     "id": 10,
@@ -641,7 +817,8 @@ const BOOKS_DATA = [
       "精神熵：内心混乱、注意力涣散 = 痛苦",
       "心流 = 技能与挑战的黄金平衡点",
       "幸福是副产品，不是目标"
-    ]
+    ],
+    "action": "本周找一个挑战略高于你技能的任务，全身投入 90 分钟，体验心流。"
   },
   {
     "id": 11,
@@ -664,7 +841,8 @@ const BOOKS_DATA = [
       "反脆弱性 > 强韧性 > 脆弱性",
       "过度优化反而增加脆弱性",
       "主动试错：可选项是不对称收益的来源"
-    ]
+    ],
+    "action": "主动制造一次「可控的小失败」——做一件明知可能搞砸的事，记录你从中学到什么。"
   },
   {
     "id": 12,
@@ -687,7 +865,8 @@ const BOOKS_DATA = [
       "21 世纪三大新议题：永生、幸福、神性",
       "AI 可能比我们更了解自己",
       "人文主义是宗教，自由意志是幻觉？"
-    ]
+    ],
+    "action": "想象 2050 年你最期待的科技，思考：你今天该学什么、做什么准备，才能搭上这班车？"
   }
 ];;
 
@@ -695,8 +874,38 @@ const BOOKS_DATA = [
    初始化
    ────────────────────────────────────── */
 async function init() {
+  initTheme();
+  renderThemeSwitcher();
+
   document.getElementById('headerDate').textContent =
     new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-  /
+  // 优先尝试 fetch data.json
+  let books = null;
+  try {
+    const resp = await fetch('data.json');
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json.books && json.books.length) books = json.books;
+    }
+  } catch (err) {
+    console.warn('加载 data.json 失败，使用内置数据:', err);
+  }
+
+  if (!books) books = BOOKS_DATA;
+
+  _allBooks = books;
+  const sorted = books.slice().sort((a, b) => b.date.localeCompare(a.date));
+  const today = new Date().toISOString().slice(0, 10);
+  _todayBook = sorted.find(b => b.date === today) || sorted[0];
+  _archiveBooks = sorted.filter(b => b.id !== _todayBook.id);
+
+  renderHero(_todayBook);
+  renderFilterChips(_archiveBooks);
+  initSearch();
+  applyFilter();
+  bindKeyboardShortcuts();
+}
+
+init();

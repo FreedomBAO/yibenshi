@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "playwright-mcp",
+      "args": [
+        "--browser=chrome",
+        "--headless=true",
+        "--allow-unrestricted-file-access",
+        "--allowed-origins=file://*"
+      ]
+    }
+  }
+}

@@ -1,3 +1,26 @@
 node_modules/
 .claude/
 *.local
+
+# 大文件 - 不上传（音频/视频通常很大，应该用云存储或 LFS）
+*.mp3
+*.mp4
+*.wav
+*.mov
+*.zip
+
+# 临时文件
+*.tmp
+.~lock.*
+
+# Claude Code 安装包
+Claude Setup.exe
+
+# Skills 系统目录（避免污染主仓库）
+.agents/
+skills-lock.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

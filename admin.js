@@ -261,6 +261,24 @@ $('loginForm').addEventListener('submit', async e => {
   }
 });
 
+/* ── 分页渲染（admin + 主站共用） ── */
+const PAGE_SIZE = 20;
+function renderChunked(container, items, renderItem, opts = {}) {
+  const size = opts.pageSize || PAGE_SIZE;
+  let shown = Math.min(size, items.length);
+  const draw = () => {
+    const html = items.slice(0, shown).map(renderItem).join('');
+    const remaining = items.length - shown;
+    const btnHtml = remaining > 0
+      ? `<button type="button" class="chunk-toggle-btn" id="chunkToggle">▼ 显示下 ${Math.min(size, remaining)} 本（剩 ${remaining}）</button>`
+      : '';
+    container.innerHTML = html + btnHtml;
+    const btn = $('chunkToggle');
+    if (btn) btn.onclick = () => { shown = Math.min(shown + size, items.length); draw(); };
+  };
+  draw();
+}
+
 function logout() {
   if (!confirm('确定要退出登录吗？')) return;
   localStorage.removeItem(STORAGE_TOKEN);
@@ -300,19 +318,12 @@ function renderBookList() {
 
   const sorted = state.books.slice().sort((a, b) => (a.id || 999) - (b.id || 999));
 
-  $('bookList').innerHTML = sorted.map(book => {
+  function bookRowHtml(book) {
     const coverUrl = book.cover || book.coverUrl;
     const hasCover = coverUrl ? `<img src="${coverUrl}" alt="${escapeHtml(book.title)}">` : `<span>${escapeHtml((book.title || '?')[0])}</span>`;
     const tagsHtml = (book.tags || []).slice(0, 3).map(t => `<span style="color:var(--admin-text-light);">#${escapeHtml(t)}</span>`).join(' ');
-    const titleText = (book.title || '').toLowerCase();
-    const authorText = (book.author || '').toLowerCase();
-    const kw = state.filterKeyword.toLowerCase();
-    const matchKw = !kw || titleText.includes(kw) || authorText.includes(kw) ||
-      (book.tags || []).some(t => t.toLowerCase().includes(kw));
-    const matchCat = !state.filterCategory || book.category === state.filterCategory;
-    const hidden = !(matchKw && matchCat);
     return `
-      <div class="book-row${hidden ? ' hidden' : ''}" data-id="${book.id}" onclick="editBook('${book.id}')">
+      <div class="book-row" data-id="${book.id}" onclick="editBook('${book.id}')">
         <div class="book-row-cover">${hasCover}</div>
         <div class="book-row-info">
           <div class="book-row-title">${escapeHtml(book.title)}</div>
@@ -333,37 +344,63 @@ function renderBookList() {
         </div>
       </div>
     `;
-  }).join('');
+  }
+  renderChunked($('bookList'), sorted, bookRowHtml);
   updateFilterCount();
 }
 
 function applyFilter() {
   state.filterKeyword = $('filterInput').value.trim();
   state.filterCategory = $('filterCategory').value;
-  const rows = $('bookList').querySelectorAll('.book-row');
-  rows.forEach(row => {
-    const book = state.books.find(b => String(b.id) === String(row.dataset.id));
-    if (!book) return;
-    const titleText = (book.title || '').toLowerCase();
-    const authorText = (book.author || '').toLowerCase();
-    const kw = state.filterKeyword.toLowerCase();
+  const kw = state.filterKeyword.toLowerCase();
+  const filtered = state.books.filter(b => {
+    const titleText = (b.title || '').toLowerCase();
+    const authorText = (b.author || '').toLowerCase();
     const matchKw = !kw || titleText.includes(kw) || authorText.includes(kw) ||
-      (book.tags || []).some(t => t.toLowerCase().includes(kw));
-    const matchCat = !state.filterCategory || book.category === state.filterCategory;
-    row.classList.toggle('hidden', !(matchKw && matchCat));
+      (b.tags || []).some(t => t.toLowerCase().includes(kw));
+    const matchCat = !state.filterCategory || b.category === state.filterCategory;
+    return matchKw && matchCat;
   });
-  updateFilterCount();
+  const sorted = filtered.slice().sort((a, b) => (a.id || 999) - (b.id || 999));
+  function bookRowHtml(book) {
+    const coverUrl = book.cover || book.coverUrl;
+    const hasCover = coverUrl ? `<img src="${coverUrl}" alt="${escapeHtml(book.title)}">` : `<span>${escapeHtml((book.title || '?')[0])}</span>`;
+    const tagsHtml = (book.tags || []).slice(0, 3).map(t => `<span style="color:var(--admin-text-light);">#${escapeHtml(t)}</span>`).join(' ');
+    return `
+      <div class="book-row" data-id="${book.id}" onclick="editBook('${book.id}')">
+        <div class="book-row-cover">${hasCover}</div>
+        <div class="book-row-info">
+          <div class="book-row-title">${escapeHtml(book.title)}</div>
+          <div class="book-row-meta">
+            <span>${escapeHtml(book.author || '未知作者')}</span>
+            <span class="category">${escapeHtml(book.category || '未分类')}</span>
+            <span style="color:var(--admin-text-light);">${formatDate(book.date)}</span>
+            ${tagsHtml ? `<span>${tagsHtml}</span>` : ''}
+          </div>
+          <div class="book-row-meta" style="margin-top:6px;font-size:11px;">
+            ${coverUrl ? '✓ 封面 ' : '○ 封面 '}
+            ${(book.pdf || book.pdfUrl) ? '✓ PDF ' : '○ PDF '}
+            ${(book.audio || book.audioUrl) ? '✓ 音频 ' : '○ 音频'}
+          </div>
+        </div>
+        <div class="book-row-actions">
+          <button class="btn btn-ghost" onclick="event.stopPropagation();editBook('${book.id}')">编辑</button>
+        </div>
+      </div>
+    `;
+  }
+  renderChunked($('bookList'), sorted, bookRowHtml);
+  updateFilterCount(filtered.length);
 }
 
-function updateFilterCount() {
+function updateFilterCount(filteredTotal) {
   const el = $('filterCount');
   if (!el) return;
-  const total = $('bookList').querySelectorAll('.book-row').length;
-  const visible = $('bookList').querySelectorAll('.book-row:not(.hidden)').length;
+  const total = state.books.length;
   if (!state.filterKeyword && !state.filterCategory) {
-    el.textContent = '';
+    el.textContent = total > 20 ? `显示前 20 / 共 ${total}` : `共 ${total}`;
   } else {
-    el.textContent = `显示 ${visible} / ${total}`;
+    el.textContent = `匹配 ${filteredTotal != null ? filteredTotal : '?'} / 共 ${total}`;
   }
 }
 
