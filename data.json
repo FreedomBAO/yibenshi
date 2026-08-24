@@ -12,17 +12,18 @@
         "决策系统",
         "行为经济学"
       ],
-      "audioUrl": "audio/book-001.mp3",
-      "pdfUrl": "pdf/book-001.pdf",
-      "duration": "45:23",
-      "rating": "9.0",
-      "category": "认知与心理",
       "highlights": [
         "人类95%的决策依赖系统1（直觉），理性思考是稀缺资源",
         "过度依赖系统1会引发大量认知偏差",
         "刻意引入慢思考的标准化流程反而能降低错误率"
       ],
-      "action": "本周做 1 个小决定时，刻意启动「慢思考」：列出 3 个支持/反对点再下结论。"
+      "action": "本周做 1 个小决定时，刻意启动「慢思考」：列出 3 个支持/反对点再下结论。",
+      "duration": "45:23",
+      "rating": "9.0",
+      "category": "认知与心理",
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-1-cover-1787577238033.jpg",
+      "audio": "audio/book-001.mp3",
+      "audioUrl": "audio/book-001.mp3"
     },
     {
       "id": 2,
@@ -264,7 +265,7 @@
       ],
       "action": "主动制造一次「可控的小失败」——做一件明知可能搞砸的事，记录你从中学到什么。"
     },
-        {
+    {
       "id": 12,
       "date": "2026-05-18",
       "title": "未来简史",
