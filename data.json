@@ -64,17 +64,20 @@
         "认知心理",
         "方法论"
       ],
-      "audioUrl": "audio/book-003.mp3",
-      "pdfUrl": "pdf/book-003.pdf",
-      "duration": "39:18",
-      "rating": "8.7",
-      "category": "个人成长",
       "highlights": [
         "身份认同驱动习惯，而非目标驱动",
         "环境设计 > 意志力消耗",
         "1% 的微小改进 × 365 天 = 37 倍提升"
       ],
-      "action": "选 1 个你想养成的微习惯，把它绑定到已有习惯后面（提示-渴求-反应-奖励）。"
+      "action": "选 1 个你想养成的微习惯，把它绑定到已有习惯后面（提示-渴求-反应-奖励）。",
+      "duration": "39:18",
+      "rating": "8.7",
+      "category": "个人成长",
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-3-cover-1787668221484.jpg",
+      "pdf": "pdf/book-003.pdf",
+      "pdfUrl": "pdf/book-003.pdf",
+      "audio": "audio/book-003.mp3",
+      "audioUrl": "audio/book-003.mp3"
     },
     {
       "id": 4,
