@@ -37,17 +37,20 @@
         "商业创新",
         "人生哲学"
       ],
-      "audioUrl": "audio/book-002.mp3",
-      "pdfUrl": "pdf/book-002.pdf",
-      "duration": "52:10",
-      "rating": "8.7",
-      "category": "个人成长",
       "highlights": [
         "梦想 + 现实 + 决心 = 成功",
         "痛苦 + 反思 = 进步",
         "极度求真、极度透明的决策文化"
       ],
-      "action": "从今天开始记录你做重大决策时的「原则」，一周后回看，沉淀你自己的判断框架。"
+      "action": "从今天开始记录你做重大决策时的「原则」，一周后回看，沉淀你自己的判断框架。",
+      "duration": "52:10",
+      "rating": "8.7",
+      "category": "个人成长",
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-2-cover-1787668135329.jpg",
+      "pdf": "pdf/book-002.pdf",
+      "pdfUrl": "pdf/book-002.pdf",
+      "audio": "audio/book-002.mp3",
+      "audioUrl": "audio/book-002.mp3"
     },
     {
       "id": 3,
