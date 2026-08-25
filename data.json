@@ -91,17 +91,20 @@
         "个人成长",
         "哲学思辨"
       ],
-      "audioUrl": "audio/book-004.mp3",
-      "pdfUrl": "pdf/book-004.pdf",
-      "duration": "44:55",
-      "rating": "8.6",
-      "category": "金融与经济",
       "highlights": [
         "财富是睡着时仍能为你赚钱的资产",
         "代码和媒体是新一代「无需许可」的杠杆",
         "幸福是减去所有痛苦后的产物"
       ],
-      "action": "列出你最擅长的 3 件事，找到「杠杆点」——怎样用更少的努力换更大的复利。"
+      "action": "列出你最擅长的 3 件事，找到「杠杆点」——怎样用更少的努力换更大的复利。",
+      "duration": "44:55",
+      "rating": "8.6",
+      "category": "金融与经济",
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-4-cover-1787668383440.jpg",
+      "pdf": "pdf/book-004.pdf",
+      "pdfUrl": "pdf/book-004.pdf",
+      "audio": "audio/book-004.mp3",
+      "audioUrl": "audio/book-004.mp3"
     },
     {
       "id": 5,
