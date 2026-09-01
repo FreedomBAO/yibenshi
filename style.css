@@ -371,8 +371,16 @@ body {
   font-family: var(--font-display);
 }
 
-/* ── PDF Button ── */
-.pdf-btn {
+/* ── PDF Preview & Download ── */
+.pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: fit-content;
+}
+
+.pdf-btn,
+.pdf-preview-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -393,7 +401,18 @@ body {
 
 .pdf-btn:hover { background: var(--text-primary); color: var(--bg); }
 
-.pdf-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.pdf-preview-btn {
+  background: var(--text-primary);
+  color: var(--bg);
+}
+
+.pdf-preview-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pdf-btn svg,
+.pdf-preview-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 
 /* ── Search & Filter ── */
 .search-filter-bar {
@@ -683,7 +702,8 @@ body {
 
 .card-actions .audio-player { padding: 8px 10px; }
 
-.card-actions .pdf-btn { font-size: 10px; padding: 7px 12px; }
+.card-actions .pdf-btn,
+.card-actions .pdf-preview-btn { font-size: 10px; padding: 7px 12px; }
 
 /* ── Loading & Empty ── */
 .loading-state {

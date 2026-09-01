@@ -183,31 +183,44 @@ function shareBtnHtml(book) {
     </button>`;
 }
 
-/* ── PDF 按钮 ── */
+/* ── PDF 预览与下载 ── */
+function siteAssetUrl(url) {
+  const rawPrefix = 'https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/';
+  return url.startsWith(rawPrefix) ? url.slice(rawPrefix.length) : url;
+}
+
 function pdfBtnHtml(book) {
   const pdfUrl = book.pdf || book.pdfUrl;
   if (pdfUrl) {
+    const assetUrl = siteAssetUrl(pdfUrl);
     return `
-      <a class="pdf-btn" href="${pdfUrl}" target="_blank" rel="noopener">
+      <div class="pdf-actions">
+        <a class="pdf-preview-btn" href="${assetUrl}" target="_blank" rel="noopener" aria-label="在线预览《${book.title}》PDF">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1.5 8s2.4-4 6.5-4 6.5 4 6.5 4-2.4 4-6.5 4-6.5-4-6.5-4z"/>
+            <circle cx="8" cy="8" r="1.8"/>
+          </svg>
+          在线预览
+        </a>
+        <a class="pdf-btn" href="${assetUrl}" download aria-label="下载《${book.title}》PDF">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 1v9M4.5 7.5 8 11l3.5-3.5"/>
+            <path d="M2 14h12"/>
+          </svg>
+          下载 PDF
+        </a>
+      </div>`;
+  }
+  return `
+    <div class="pdf-actions">
+      <button class="pdf-btn" onclick="showComingSoon('${book.title} 的精读笔记 PDF')" aria-label="精读笔记暂未上传">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M3 1h7l3 3v11H3V1z"/>
           <path d="M10 1v3h3"/>
-          <line x1="6" y1="8" x2="10" y2="8"/>
-          <line x1="6" y1="11" x2="10" y2="11"/>
         </svg>
-        下载精读笔记
-      </a>`;
-  }
-  return `
-    <button class="pdf-btn" onclick="showComingSoon('${book.title} 的精读笔记 PDF')" aria-label="下载精读笔记">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M3 1h7l3 3v11H3V1z"/>
-        <path d="M10 1v3h3"/>
-        <line x1="6" y1="8" x2="10" y2="8"/>
-        <line x1="6" y1="11" x2="10" y2="11"/>
-      </svg>
-      下载精读笔记
-    </button>`;
+        PDF 暂未上传
+      </button>
+    </div>`;
 }
 
 /* ── Hero ── */
