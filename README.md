@@ -4,7 +4,7 @@
 
 一个每日推荐一本书的静态网站，包含 58 本经典书的精读内容、深度书评、核心要点、行动建议。
 
-**在线预览**：[GitHub Pages](https://freedombao.github.io/yibenshi/) ｜ **仓库**：[FreedomBAO/yibenshi](https://github.com/FreedomBAO/yibenshi)
+**在线预览**：[Vercel](https://dailybooks-three.vercel.app/) ｜ **仓库**：[FreedomBAO/yibenshi](https://github.com/FreedomBAO/yibenshi)
 
 ---
 

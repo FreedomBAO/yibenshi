@@ -61,6 +61,11 @@ const PALETTE = [
   '#3E2C2C', '#2C3E2C', '#3C3528', '#1E3A4A',
 ];
 
+const CATEGORY_ORDER = [
+  '认知与心理', '个人成长', '学习方法', '商业与创新', '金融与经济',
+  '决策与系统', '沟通与关系', '科技与未来', '历史与文明', '哲学与思辨',
+];
+
 function colorForId(id) {
   return PALETTE[(id - 1) % PALETTE.length];
 }
@@ -71,7 +76,18 @@ function formatDate(dateStr) {
 }
 
 function tagsHtml(tags, cls = 'tag-chip') {
-  return tags.map(t => `<span class="${cls}">${t}</span>`).join('');
+  return (tags || []).map(t => `<span class="${cls}">${t}</span>`).join('');
+}
+
+function categoryTags(book) {
+  return book.category ? [book.category] : [];
+}
+
+function coverBackground(book, fallbackColor) {
+  const coverUrl = book.cover || book.coverUrl;
+  return coverUrl
+    ? `${fallbackColor} url('${coverUrl}') center / contain no-repeat`
+    : fallbackColor;
 }
 
 /* ── 主题切换 ── */
@@ -210,7 +226,7 @@ function renderHero(book) {
       </button>
     </div>
     <div class="hero-card" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
-      <div class="hero-color-block" style="background:${book.cover ? `url(${book.cover}) center/cover no-repeat` : color}">
+      <div class="hero-color-block" style="background:${coverBackground(book, color)}">
         <div class="hero-book-number">${String(book.id).padStart(2, '0')}</div>
         <div class="hero-tag">今日精读</div>
         <div class="hero-title-block">
@@ -224,7 +240,7 @@ function renderHero(book) {
           <div class="hero-description"><p>${book.description}</p></div>
           <div class="hero-meta">
             <span class="hero-date">${formatDate(book.date)}</span>
-            <div class="tag-chips">${tagsHtml(book.tags)}</div>
+            <div class="tag-chips">${tagsHtml(categoryTags(book))}</div>
           </div>
         </div>
         <div class="hero-actions" onclick="event.stopPropagation()">
@@ -248,7 +264,7 @@ function bookCardHtml(book, i) {
   const delay = (i * 0.08).toFixed(2);
   return `
     <div class="book-card" style="animation-delay:${delay}s" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
-      <div class="card-color-block" style="background:${book.cover ? `url(${book.cover}) center/cover no-repeat` : color}">
+      <div class="card-color-block" style="background:${coverBackground(book, color)}">
         <div class="card-book-index">${String(book.id).padStart(2, '0')}</div>
         <div class="card-title-in-block">
           <div class="card-book-title">${book.title}</div>
@@ -258,7 +274,7 @@ function bookCardHtml(book, i) {
       <div class="card-body">
         <div class="card-date">${formatDate(book.date)}</div>
         <div class="card-description">${book.description}</div>
-        <div class="card-tags">${tagsHtml(book.tags, 'tag-chip')}</div>
+        <div class="card-tags">${tagsHtml(categoryTags(book), 'tag-chip')}</div>
         <div class="card-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book)}
           ${pdfBtnHtml(book)}
@@ -294,20 +310,21 @@ function renderArchive(books) {
       <div class="empty-archive-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
         <div style="font-size:48px;margin-bottom:16px;opacity:0.4;">📚</div>
         <p style="font-family:var(--font-serif);font-size:16px;color:var(--text-secondary);margin-bottom:8px;">暂无匹配的书籍</p>
-        <p style="font-size:13px;color:var(--text-light);">试试其他关键词或标签</p>
+        <p style="font-size:13px;color:var(--text-light);">试试其他关键词或分类</p>
       </div>`;
     return;
   }
   renderChunked(grid, books, (book, i) => bookCardHtml(book, i));
 }
 
-/* ── 标签筛选 ── */
-function renderFilterChips(archiveBooks) {
-  const tags = [...new Set(archiveBooks.flatMap(b => b.tags))].sort();
+/* ── 固定分类筛选 ── */
+function renderFilterChips(books) {
+  const present = new Set(books.map(book => book.category).filter(Boolean));
+  const categories = CATEGORY_ORDER.filter(category => present.has(category));
   const container = document.getElementById('filterChips');
   container.innerHTML = `
-    <button class="filter-chip active" data-tag="" aria-pressed="true">全部</button>
-    ${tags.map(t => `<button class="filter-chip" data-tag="${t}" aria-pressed="false">${t}</button>`).join('')}
+    <button class="filter-chip active" data-category="" aria-pressed="true">全部</button>
+    ${categories.map(category => `<button class="filter-chip" data-category="${category}" aria-pressed="false">${category}</button>`).join('')}
   `;
   container.addEventListener('click', e => {
     const chip = e.target.closest('.filter-chip');
@@ -326,24 +343,25 @@ function renderFilterChips(archiveBooks) {
 let _allBooks = [];
 let _todayBook = null;
 let _archiveBooks = [];
-let _activeTag = '';
+let _activeCategory = '';
 let _searchQuery = '';
 
 function applyFilter() {
   const chip = document.querySelector('.filter-chip.active');
-  _activeTag = chip ? chip.dataset.tag : '';
+  _activeCategory = chip ? chip.dataset.category : '';
   _searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
 
   let filtered = _archiveBooks;
-  if (_activeTag) {
-    filtered = filtered.filter(b => b.tags.includes(_activeTag));
+  if (_activeCategory) {
+    filtered = filtered.filter(b => b.category === _activeCategory);
   }
   if (_searchQuery) {
     filtered = filtered.filter(b =>
       b.title.toLowerCase().includes(_searchQuery) ||
       (b.originalTitle || '').toLowerCase().includes(_searchQuery) ||
       b.author.toLowerCase().includes(_searchQuery) ||
-      b.description.toLowerCase().includes(_searchQuery)
+      b.description.toLowerCase().includes(_searchQuery) ||
+      (b.category || '').toLowerCase().includes(_searchQuery)
     );
   }
 
@@ -427,8 +445,8 @@ function openDetailModal(bookId) {
         </section>
 
         <section class="detail-section">
-          <h3 class="detail-section-title">相关标签</h3>
-          <div class="detail-tags">${tagsHtml(book.tags, 'detail-tag')}</div>
+          <h3 class="detail-section-title">书籍分类</h3>
+          <div class="detail-tags">${tagsHtml(categoryTags(book), 'detail-tag')}</div>
         </section>
 
         <div class="detail-actions">
@@ -476,7 +494,7 @@ function openShareModal(bookId) {
           <div class="share-card-title">${book.title}</div>
           <div class="share-card-original">${book.originalTitle || ''}</div>
           <div class="share-card-author">— ${book.author}</div>
-          <div class="share-card-tags">${tagsHtml((book.tags || []).slice(0, 3), 'share-card-tag')}</div>
+          <div class="share-card-tags">${tagsHtml(categoryTags(book), 'share-card-tag')}</div>
           <div class="share-card-footer">
             <span class="share-card-date">${formatDate(book.date)}</span>
             <span class="share-card-rating">★ ${book.rating || '8.5'}</span>
@@ -881,16 +899,24 @@ async function init() {
     new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-  // 优先尝试 fetch data.json
+  // 后台直接写入 GitHub；前端优先读取最新书库，部署内快照作为备用。
   let books = null;
-  try {
-    const resp = await fetch('data.json');
-    if (resp.ok) {
+  const dataSources = [
+    'https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/data.json?_=' + Date.now(),
+    'data.json?_=' + Date.now(),
+  ];
+  for (const source of dataSources) {
+    try {
+      const resp = await fetch(source, { cache: 'no-store' });
+      if (!resp.ok) continue;
       const json = await resp.json();
-      if (json.books && json.books.length) books = json.books;
+      if (json.books && json.books.length) {
+        books = json.books;
+        break;
+      }
+    } catch (err) {
+      console.warn('加载书籍数据失败，尝试备用来源:', source, err);
     }
-  } catch (err) {
-    console.warn('加载 data.json 失败，使用内置数据:', err);
   }
 
   if (!books) books = BOOKS_DATA;
@@ -902,7 +928,7 @@ async function init() {
   _archiveBooks = sorted.filter(b => b.id !== _todayBook.id);
 
   renderHero(_todayBook);
-  renderFilterChips(_archiveBooks);
+  renderFilterChips(_allBooks);
   initSearch();
   applyFilter();
   bindKeyboardShortcuts();
