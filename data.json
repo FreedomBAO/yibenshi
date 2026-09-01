@@ -23,7 +23,9 @@
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-1-cover-1788230473772.jpg",
       "audio": "audio/book-001.mp3",
-      "audioUrl": "audio/book-001.mp3"
+      "audioUrl": "audio/book-001.mp3",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-1-pdf-1788231690727.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-1-pdf-1788231690727.pdf"
     },
     {
       "id": 2,
@@ -47,8 +49,8 @@
       "rating": "8.7",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-2-cover-1788230559765.jpg",
-      "pdf": "pdf/book-002.pdf",
-      "pdfUrl": "pdf/book-002.pdf",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-2-pdf-1788231693828.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-2-pdf-1788231693828.pdf",
       "audio": "audio/book-002.mp3",
       "audioUrl": "audio/book-002.mp3"
     },
@@ -74,8 +76,8 @@
       "rating": "8.7",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-3-cover-1788230567289.jpg",
-      "pdf": "pdf/book-003.pdf",
-      "pdfUrl": "pdf/book-003.pdf",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-3-pdf-1788231696329.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-3-pdf-1788231696329.pdf",
       "audio": "audio/book-003.mp3",
       "audioUrl": "audio/book-003.mp3"
     },
@@ -101,8 +103,8 @@
       "rating": "8.6",
       "category": "金融与经济",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-4-cover-1788230573855.jpg",
-      "pdf": "pdf/book-004.pdf",
-      "pdfUrl": "pdf/book-004.pdf",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-4-pdf-1788231699447.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-4-pdf-1788231699447.pdf",
       "audio": "audio/book-004.mp3",
       "audioUrl": "audio/book-004.mp3"
     },
@@ -119,7 +121,7 @@
         "效率"
       ],
       "audioUrl": "audio/book-005.mp3",
-      "pdfUrl": "pdf/book-005.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-5-pdf-1788231702806.pdf",
       "duration": "41:30",
       "rating": "8.5",
       "category": "个人成长",
@@ -129,7 +131,8 @@
         "无聊不是敌人，而是深度思考的入口"
       ],
       "action": "本周每天留 90 分钟「深度工作时间」：关微信、单任务、写下来要解决的问题。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-5-cover-1788230736941.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-5-cover-1788230736941.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-5-pdf-1788231702806.pdf"
     },
     {
       "id": 6,
@@ -144,7 +147,7 @@
         "方法论"
       ],
       "audioUrl": "audio/book-006.mp3",
-      "pdfUrl": "pdf/book-006.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-6-pdf-1788231706071.pdf",
       "duration": "37:42",
       "rating": "8.9",
       "category": "决策与系统",
@@ -154,7 +157,8 @@
         "找到杠杆点：以小博大改变系统"
       ],
       "action": "找一个你正在解决的问题，画出它的反馈回路：谁是增强回路？谁是调节回路？",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-6-cover-1788227819300.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-6-cover-1788227819300.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-6-pdf-1788231706071.pdf"
     },
     {
       "id": 7,
@@ -169,7 +173,7 @@
         "创业"
       ],
       "audioUrl": "audio/book-007.mp3",
-      "pdfUrl": "pdf/book-007.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-7-pdf-1788231709437.pdf",
       "duration": "36:18",
       "rating": "8.4",
       "category": "商业与创新",
@@ -179,7 +183,8 @@
         "Definite Optimism vs Indefinite Optimism"
       ],
       "action": "思考你所在的领域，「从 0 到 1」的机会是什么？写下 3 个别人没看到的差异化。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-7-cover-1788227825529.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-7-cover-1788227825529.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-7-pdf-1788231709437.pdf"
     },
     {
       "id": 8,
@@ -194,7 +199,7 @@
         "决策系统"
       ],
       "audioUrl": "audio/book-008.mp3",
-      "pdfUrl": "pdf/book-008.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-8-pdf-1788231711912.pdf",
       "duration": "47:25",
       "rating": "8.2",
       "category": "金融与经济",
@@ -204,7 +209,8 @@
         "我们永远低估了未知的未知"
       ],
       "action": "在你的生活/工作里，找出「最脆弱」的环节，给它加一道冗余（杠铃策略）。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-8-cover-1788227833819.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-8-cover-1788227833819.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-8-pdf-1788231711912.pdf"
     },
     {
       "id": 9,
@@ -219,7 +225,7 @@
         "沟通关系"
       ],
       "audioUrl": "audio/book-009.mp3",
-      "pdfUrl": "pdf/book-009.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-9-pdf-1788231714365.pdf",
       "duration": "33:48",
       "rating": "8.6",
       "category": "哲学与思辨",
@@ -229,7 +235,8 @@
         "人生不是一条线，而是连续刹那的舞蹈"
       ],
       "action": "列出最近让你烦恼的 1 件事，问自己：「这到底是谁的事？」练习课题分离。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-9-cover-1788227844125.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-9-cover-1788227844125.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-9-pdf-1788231714365.pdf"
     },
     {
       "id": 10,
@@ -244,7 +251,7 @@
         "心理学"
       ],
       "audioUrl": "audio/book-010.mp3",
-      "pdfUrl": "pdf/book-010.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-10-pdf-1788231717284.pdf",
       "duration": "42:08",
       "rating": "8.5",
       "category": "认知与心理",
@@ -254,7 +261,8 @@
         "幸福是副产品，不是目标"
       ],
       "action": "本周找一个挑战略高于你技能的任务，全身投入 90 分钟，体验心流。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-10-cover-1788227850237.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-10-cover-1788227850237.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-10-pdf-1788231717284.pdf"
     },
     {
       "id": 11,
@@ -269,7 +277,7 @@
         "决策系统"
       ],
       "audioUrl": "audio/book-011.mp3",
-      "pdfUrl": "pdf/book-011.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-11-pdf-1788231720414.pdf",
       "duration": "48:55",
       "rating": "8.3",
       "category": "金融与经济",
@@ -279,7 +287,8 @@
         "主动试错：可选项是不对称收益的来源"
       ],
       "action": "主动制造一次「可控的小失败」——做一件明知可能搞砸的事，记录你从中学到什么。",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-11-cover-1788227859708.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-11-cover-1788227859708.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-11-pdf-1788231720414.pdf"
     },
     {
       "id": 12,
@@ -294,7 +303,7 @@
         "哲学思辨"
       ],
       "audioUrl": "audio/book-012.mp3",
-      "pdfUrl": "pdf/book-012.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-12-pdf-1788231723184.pdf",
       "duration": "51:12",
       "rating": "8.6",
       "category": "历史与文明",
@@ -304,7 +313,8 @@
         "人文主义是宗教，自由意志是幻觉？"
       ],
       "action": "想象 2050 年你最期待的科技，思考：你今天该学什么、做什么准备，才能搭上这班车？",
-      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-12-cover-1788227865542.jpg"
+      "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-12-cover-1788227865542.jpg",
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-12-pdf-1788231723184.pdf"
     },
     {
       "id": 13,
@@ -332,8 +342,8 @@
       "rating": "8.5",
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-13-cover-1788230760076.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-13-pdf-1788231726336.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-13-pdf-1788231726336.pdf"
     },
     {
       "id": 14,
@@ -361,8 +371,8 @@
       "rating": "8.5",
       "category": "金融与经济",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-14-cover-1788230768107.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-14-pdf-1788231729478.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-14-pdf-1788231729478.pdf"
     },
     {
       "id": 15,
@@ -390,8 +400,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-15-cover-1788230775683.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-15-pdf-1788231732460.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-15-pdf-1788231732460.pdf"
     },
     {
       "id": 16,
@@ -419,8 +429,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-16-cover-1788230785061.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-16-pdf-1788231736144.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-16-pdf-1788231736144.pdf"
     },
     {
       "id": 17,
@@ -448,8 +458,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-17-cover-1788230799739.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-17-pdf-1788231738793.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-17-pdf-1788231738793.pdf"
     },
     {
       "id": 18,
@@ -477,8 +487,8 @@
       "rating": "8.6",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-18-cover-1788230811170.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-18-pdf-1788231741879.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-18-pdf-1788231741879.pdf"
     },
     {
       "id": 19,
@@ -506,8 +516,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-19-cover-1788230825863.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-19-pdf-1788231744901.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-19-pdf-1788231744901.pdf"
     },
     {
       "id": 20,
@@ -535,8 +545,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-20-cover-1788230835525.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-20-pdf-1788231747388.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-20-pdf-1788231747388.pdf"
     },
     {
       "id": 21,
@@ -564,8 +574,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-21-cover-1788230857353.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-21-pdf-1788231750271.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-21-pdf-1788231750271.pdf"
     },
     {
       "id": 22,
@@ -593,8 +603,8 @@
       "rating": "8.5",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-22-cover-1788230866214.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-22-pdf-1788231752731.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-22-pdf-1788231752731.pdf"
     },
     {
       "id": 23,
@@ -622,8 +632,8 @@
       "rating": "8.5",
       "category": "历史与文明",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-23-cover-1788230878613.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-23-pdf-1788231755584.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-23-pdf-1788231755584.pdf"
     },
     {
       "id": 24,
@@ -651,8 +661,8 @@
       "rating": "8.5",
       "category": "金融与经济",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-24-cover-1788230885208.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-24-pdf-1788231758646.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-24-pdf-1788231758646.pdf"
     },
     {
       "id": 25,
@@ -678,8 +688,8 @@
       "rating": "8.5",
       "category": "沟通与关系",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-25-cover-1788230892817.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-25-pdf-1788231761668.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-25-pdf-1788231761668.pdf"
     },
     {
       "id": 26,
@@ -707,8 +717,8 @@
       "rating": "8.5",
       "category": "沟通与关系",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-26-cover-1788230923294.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-26-pdf-1788231764115.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-26-pdf-1788231764115.pdf"
     },
     {
       "id": 27,
@@ -736,8 +746,8 @@
       "rating": "8.5",
       "category": "沟通与关系",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-27-cover-1788230933443.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-27-pdf-1788231766732.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-27-pdf-1788231766732.pdf"
     },
     {
       "id": 28,
@@ -764,8 +774,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-28-cover-1788230957149.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-28-pdf-1788231769750.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-28-pdf-1788231769750.pdf"
     },
     {
       "id": 29,
@@ -793,8 +803,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-29-cover-1788230966480.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-29-pdf-1788231772664.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-29-pdf-1788231772664.pdf"
     },
     {
       "id": 30,
@@ -822,8 +832,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-30-cover-1788230973681.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-30-pdf-1788231775617.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-30-pdf-1788231775617.pdf"
     },
     {
       "id": 31,
@@ -851,8 +861,8 @@
       "rating": "8.7",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-31-cover-1788230984045.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-31-pdf-1788231779006.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-31-pdf-1788231779006.pdf"
     },
     {
       "id": 32,
@@ -880,8 +890,8 @@
       "rating": "8.5",
       "category": "科技与未来",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-32-cover-1788230993047.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-32-pdf-1788231782040.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-32-pdf-1788231782040.pdf"
     },
     {
       "id": 33,
@@ -909,8 +919,8 @@
       "rating": "8.5",
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-33-cover-1788231000291.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-33-pdf-1788231784314.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-33-pdf-1788231784314.pdf"
     },
     {
       "id": 34,
@@ -938,8 +948,8 @@
       "rating": "8.9",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-34-cover-1788231011586.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-34-pdf-1788231786883.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-34-pdf-1788231786883.pdf"
     },
     {
       "id": 35,
@@ -967,8 +977,8 @@
       "rating": "8.5",
       "category": "金融与经济",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-35-cover-1788231022560.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-35-pdf-1788231789727.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-35-pdf-1788231789727.pdf"
     },
     {
       "id": 36,
@@ -996,8 +1006,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-36-pdf-1788231793130.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-36-pdf-1788231793130.pdf"
     },
     {
       "id": 37,
@@ -1025,8 +1035,8 @@
       "rating": "8.5",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-37-cover-1788231050295.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-37-pdf-1788231796371.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-37-pdf-1788231796371.pdf"
     },
     {
       "id": 38,
@@ -1054,8 +1064,8 @@
       "rating": "8.5",
       "category": "金融与经济",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-38-cover-1788231057017.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-38-pdf-1788231800074.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-38-pdf-1788231800074.pdf"
     },
     {
       "id": 39,
@@ -1083,8 +1093,8 @@
       "rating": "8.5",
       "category": "科技与未来",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-39-cover-1788231071850.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-39-pdf-1788231804003.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-39-pdf-1788231804003.pdf"
     },
     {
       "id": 40,
@@ -1112,8 +1122,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-40-cover-1788231081462.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-40-pdf-1788231807195.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-40-pdf-1788231807195.pdf"
     },
     {
       "id": 41,
@@ -1141,8 +1151,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-41-cover-1788231092199.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-41-pdf-1788231810162.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-41-pdf-1788231810162.pdf"
     },
     {
       "id": 42,
@@ -1170,8 +1180,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-42-cover-1788231098920.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-42-pdf-1788231813229.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-42-pdf-1788231813229.pdf"
     },
     {
       "id": 43,
@@ -1199,8 +1209,8 @@
       "rating": "8.5",
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-43-cover-1788231111803.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-43-pdf-1788231815741.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-43-pdf-1788231815741.pdf"
     },
     {
       "id": 44,
@@ -1227,8 +1237,8 @@
       "rating": "8.5",
       "category": "学习方法",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-44-cover-1788231118659.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-44-pdf-1788231819013.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-44-pdf-1788231819013.pdf"
     },
     {
       "id": 45,
@@ -1256,8 +1266,8 @@
       "rating": "8.5",
       "category": "历史与文明",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-45-cover-1788231128892.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-45-pdf-1788231821995.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-45-pdf-1788231821995.pdf"
     },
     {
       "id": 46,
@@ -1285,8 +1295,8 @@
       "rating": "8.5",
       "category": "历史与文明",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-46-cover-1788231139533.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-46-pdf-1788231824879.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-46-pdf-1788231824879.pdf"
     },
     {
       "id": 47,
@@ -1314,8 +1324,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-47-cover-1788231147572.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-47-pdf-1788231827813.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-47-pdf-1788231827813.pdf"
     },
     {
       "id": 48,
@@ -1343,8 +1353,8 @@
       "rating": "8.5",
       "category": "决策与系统",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-48-cover-1788231153867.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-48-pdf-1788231830583.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-48-pdf-1788231830583.pdf"
     },
     {
       "id": 49,
@@ -1372,8 +1382,8 @@
       "rating": "8.5",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-49-cover-1788231159283.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-49-pdf-1788231832536.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-49-pdf-1788231832536.pdf"
     },
     {
       "id": 50,
@@ -1401,8 +1411,8 @@
       "rating": "8.5",
       "category": "历史与文明",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-50-cover-1788231166602.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-50-pdf-1788231835720.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-50-pdf-1788231835720.pdf"
     },
     {
       "id": 51,
@@ -1430,8 +1440,8 @@
       "rating": "8.5",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-51-cover-1788231180454.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-51-pdf-1788231838972.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-51-pdf-1788231838972.pdf"
     },
     {
       "id": 52,
@@ -1459,8 +1469,8 @@
       "rating": "8.5",
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-52-cover-1788231235935.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-52-pdf-1788231841614.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-52-pdf-1788231841614.pdf"
     },
     {
       "id": 53,
@@ -1488,8 +1498,8 @@
       "rating": "8.5",
       "category": "认知与心理",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-53-cover-1788231271706.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-53-pdf-1788231844511.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-53-pdf-1788231844511.pdf"
     },
     {
       "id": 54,
@@ -1517,8 +1527,8 @@
       "rating": "8.5",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-54-cover-1788231290306.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-54-pdf-1788231847348.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-54-pdf-1788231847348.pdf"
     },
     {
       "id": 55,
@@ -1546,8 +1556,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-55-cover-1788231308119.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-55-pdf-1788231850470.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-55-pdf-1788231850470.pdf"
     },
     {
       "id": 56,
@@ -1575,8 +1585,8 @@
       "rating": "8.5",
       "category": "哲学与思辨",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-56-cover-1788231315577.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-56-pdf-1788231853178.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-56-pdf-1788231853178.pdf"
     },
     {
       "id": 57,
@@ -1603,8 +1613,8 @@
       "rating": "8.5",
       "category": "个人成长",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-57-cover-1788231330400.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-57-pdf-1788231855350.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-57-pdf-1788231855350.pdf"
     },
     {
       "id": 58,
@@ -1632,8 +1642,8 @@
       "rating": "8.5",
       "category": "商业与创新",
       "cover": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/covers/book-58-cover-1788231338859.jpg",
-      "pdf": "",
-      "pdfUrl": ""
+      "pdf": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-58-pdf-1788231857770.pdf",
+      "pdfUrl": "https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/assets/pdfs/book-58-pdf-1788231857770.pdf"
     }
   ]
 }
