@@ -2,7 +2,7 @@
 
 > 每天一本好书的精华解读，与智慧同行。
 
-一个每日推荐一本书的静态网站，包含 12 本经典书的精读内容、深度书评、核心要点、行动建议。
+一个每日推荐一本书的静态网站，包含 58 本经典书的精读内容、深度书评、核心要点、行动建议。
 
 **在线预览**：[GitHub Pages](https://freedombao.github.io/yibenshi/) ｜ **仓库**：[FreedomBAO/yibenshi](https://github.com/FreedomBAO/yibenshi)
 
@@ -11,7 +11,7 @@
 ## ✨ 功能特性
 
 ### 内容
-- 📚 **12 本精选书籍**：覆盖认知心理、个人成长、商业创新、金融经济等 7 个分类
+- 📚 **58 本精选书籍**：覆盖认知心理、个人成长、商业创新、金融经济等 10 个分类
 - 📖 **深度书评 + 核心要点 + 行动建议**：每本书都有完整的精读结构
 - 🔍 **实时搜索 + 标签筛选**：按书名/作者/内容搜索，按标签分类浏览
 
@@ -27,7 +27,9 @@
 - 🔍 **SEO 优化**：Open Graph / Twitter Card / favicon
 
 ### 管理
-- 📝 **可视化后台**：[admin.html](admin.html) 一键填表，自动 commit 到 GitHub。无需服务器、无需本地构建。
+- 📝 **可视化后台**：[admin.html](admin.html) 一键填表，自动 commit 到 GitHub。封面搜索通过本地轻量服务运行，无需构建。
+- 🖼️ **自动封面**：豆瓣优先，Google Books / Open Library / 百度兜底；先预览确认，再上传到 GitHub。
+- 📦 **批量 PDF**：选择 ZIP 后按书名自动匹配、去重并预览；由你确认后逐本上传，最后统一更新 `data.json`。
 - 🔍 **搜索/筛选**：按书名、作者、标签搜索；按分类下拉过滤；右上角显示当前可见数 / 总数。
 - ✍️ **Markdown 预览**：深度书评、行动建议支持 `**粗体** *斜体* [链接](https://…) - 列表`，边写边看。
 - 🛡 **友好错误提示**：Token 过期 / 权限不足 / API 限流时给出具体指引（带跳转链接），而不是一行英文。
@@ -39,8 +41,9 @@
    - **Expiration**：选 `No expiration`（或自定义）
    - **Scopes**：只勾选 `Contents: Read and write`
    - 点最底 `Generate token`，**复制保存**（关掉页面就再也看不到）
-2. 打开 `admin.html`，粘贴 Token + 仓库路径（默认已填 `FreedomBAO/yibenshi`），点登录
-3. 浏览器自动记住 Token，下次打开直接进后台
+2. 双击 `启动管理后台.cmd`，浏览器会自动打开 `http://127.0.0.1:8765/admin.html`
+3. 粘贴 Token + 仓库路径（默认已填 `FreedomBAO/yibenshi`），点登录
+4. 浏览器自动记住 Token，下次通过同一启动脚本进入后台
 
 > Token 只存在浏览器 `localStorage`，**不会上传到任何服务器**。仓库路径可改成你自己的 fork（要先 fork 一份再粘贴）。
 
@@ -68,14 +71,19 @@
 ├── admin.html              # 书籍管理面板（添加新书）
 ├── main.js                 # 主站脚本（含详情弹窗、主题、快捷键）
 ├── admin.js                # 管理面板脚本
+├── 启动管理后台.cmd        # 一键启动本地管理后台与封面服务
+├── tools/
+│   ├── cover-admin-server.js # 封面搜索、ZIP 解压和本地文件服务
+│   ├── analyze_pdf_archive.py # PDF 清单与文本提取检查
+│   └── build_book_catalog.py  # 从 PDF 精读报告生成书籍数据
 ├── style.css               # 主样式
-├── data.json               # 书籍数据（12 本）
+├── data.json               # 书籍数据（58 本）
 ├── TODO.md                 # 任务清单
 ├── README.md               # 本文件
 ├── 部署指南.md             # Vercel 部署步骤
-├── images/                 # 封面图（添加新书时上传到这里）
-├── audio/                  # 精读音频（待添加）
-├── pdf/                    # 精读笔记 PDF（待添加）
+├── assets/covers/          # 封面图
+├── assets/audio/           # 精读音频
+├── assets/pdfs/            # 精读笔记 PDF
 └── .gitignore
 ```
 
@@ -87,10 +95,14 @@
 
 通过 GitHub Contents API 直接提交 `data.json` 和资源文件，无需本地操作：
 
-1. 打开 `admin.html` 并按上面的"首次使用"步骤登录
+1. 双击 `启动管理后台.cmd` 并按上面的"首次使用"步骤登录
 2. 点 `+ 新增书籍` 填表：基本信息 + 深度书评（支持 Markdown 预览）+ 标签 + 行动建议
-3. 拖拽上传封面 / PDF / 音频（自动 commit 到 `assets/covers/`、`assets/pdfs/`、`assets/audio/`）
+3. 点击 `自动搜索封面`，预览并确认候选；也可以继续拖拽上传封面 / PDF / 音频
 4. 点 `保存到 GitHub` → 自动创建 commit → Vercel 在 1 分钟内自动部署
+
+需要统一检查旧封面时，在书籍列表点击 `逐本更新封面`。后台会按编号逐本展示候选，每次确认后立即上传并更新 `data.json`；可以换一批或跳过当前书籍，原封面文件不会被删除。
+
+封面确认完成后，在书籍列表点击 `批量上传 PDF`，选择原始 ZIP。后台会移除日期前缀和“报告”等后缀，以书名匹配 58 本书；同名文件优先使用日期较新的版本，没有日期时使用较大的文件。预览无误后点确认即可上传，旧 PDF 文件不会被删除。
 
 **支持的操作：**
 - 新增 / 编辑 / 删除书籍
@@ -159,7 +171,8 @@ const THEMES = {
 
 ## 🛠️ 技术栈
 
-- **HTML / CSS / 原生 JavaScript** —— 零依赖，纯静态
+- **HTML / CSS / 原生 JavaScript** —— 主站零依赖、纯静态
+- **Node.js 本地服务** —— 为后台封面搜索和 PDF ZIP 临时解压提供同源接口，不保存 Token
 - **GitHub Contents API** —— `admin.html` 通过 PAT 直接读写 `data.json` 与资源文件（无需服务器）
 - **html2canvas**（CDN）—— 分享卡图片生成
 - **Google Fonts** —— 中英文混排字体（Playfair Display + Noto Serif SC）

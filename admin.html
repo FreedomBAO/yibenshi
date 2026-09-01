@@ -62,7 +62,12 @@
             <div class="page-title">书籍管理</div>
             <div class="page-subtitle">点击编辑修改内容，上传封面/笔记/音频会自动 commit 到 GitHub</div>
           </div>
-          <button class="btn btn-primary" onclick="showAddBook()">+ 新增书籍</button>
+          <div class="page-actions">
+            <button class="btn btn-secondary" id="pdfBatchBtn" onclick="startPdfBatchUpload()">批量上传 PDF</button>
+            <input type="file" id="pdfBatchInput" accept=".zip,application/zip" hidden>
+            <button class="btn btn-secondary" id="coverBatchBtn" onclick="startCoverBatch()">逐本更新封面</button>
+            <button class="btn btn-primary" onclick="showAddBook()">+ 新增书籍</button>
+          </div>
         </div>
 
         <div class="stats-row" id="statsRow"></div>
@@ -219,6 +224,9 @@
             <div class="upload-card">
               <div class="upload-label">📕 封面图</div>
               <div class="upload-hint">JPG/PNG/WebP，建议 600×900，&lt; 5MB</div>
+              <button class="cover-search-trigger" type="button" onclick="searchCoverForCurrentBook()">
+                <span>⌕</span> 自动搜索封面
+              </button>
               <div class="upload-zone" id="coverZone">
                 <div>拖拽图片或点击选择</div>
                 <input type="file" id="coverInput" accept="image/*" style="display:none">
