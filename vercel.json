@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/companion.js": {
+      "maxDuration": 90
+    }
+  }
+}

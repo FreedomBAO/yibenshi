@@ -1,5 +1,23 @@
 # 每天精读一本书
 
+## AI 伴读配置
+
+网站会为每本书建立独立的 PDF 知识库。访客从某本书打开「AI 伴读」后，回答只引用当前书籍，并可通过页码跳转回 PDF 原文。
+
+部署前在 Vercel 项目的 **Settings → Environment Variables** 添加：
+
+- `DEEPSEEK_API_KEY`：DeepSeek API 密钥（必填，只保存在服务端）
+- `DEEPSEEK_MODEL`：模型名称，默认 `deepseek-v4-flash`
+- `DEEPSEEK_BASE_URL`：可选，默认 `https://api.deepseek.com`
+
+保存环境变量后重新部署一次。没有配置密钥时，伴读界面会显示「AI 服务待配置」，网站的其他功能不受影响。
+
+书籍 PDF 变化后，在项目根目录重新生成知识库：
+
+```powershell
+python tools/build_book_knowledge.py
+```
+
 > 每天一本好书的精华解读，与智慧同行。
 
 一个每日推荐一本书的静态网站，包含 58 本经典书的精读内容、深度书评、核心要点、行动建议。

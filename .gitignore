@@ -1,6 +1,8 @@
 node_modules/
 .claude/
 *.local
+.env.local
+.env.*.local
 
 # 大文件 - 不上传（音频/视频通常很大，应该用云存储或 LFS）
 *.mp3

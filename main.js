@@ -223,6 +223,22 @@ function pdfBtnHtml(book) {
     </div>`;
 }
 
+/* ── AI 伴读 ── */
+function companionBtnHtml(book) {
+  const hasPdf = book.pdf || book.pdfUrl;
+  return `
+    <button class="companion-btn" onclick="openCompanion(${book.id})" ${hasPdf ? '' : 'disabled'} aria-label="打开《${book.title}》AI 伴读">
+      <span class="companion-btn-mark" aria-hidden="true">AI</span>
+      <span>
+        <strong>AI 伴读</strong>
+        <small>${hasPdf ? '只问当前这本书' : '等待 PDF 上传'}</small>
+      </span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </button>`;
+}
+
 /* ── Hero ── */
 function renderHero(book) {
   const section = document.getElementById('heroSection');
@@ -258,6 +274,7 @@ function renderHero(book) {
         </div>
         <div class="hero-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book, 'hero-')}
+          ${companionBtnHtml(book)}
           ${pdfBtnHtml(book)}
           ${shareBtnHtml(book)}
         </div>
@@ -290,6 +307,7 @@ function bookCardHtml(book, i) {
         <div class="card-tags">${tagsHtml(categoryTags(book), 'tag-chip')}</div>
         <div class="card-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book)}
+          ${companionBtnHtml(book)}
           ${pdfBtnHtml(book)}
           ${shareBtnHtml(book)}
           ${detailBtnHtml(book)}
@@ -464,6 +482,7 @@ function openDetailModal(bookId) {
 
         <div class="detail-actions">
           ${audioPlayerHtml(book, 'detail-')}
+          ${companionBtnHtml(book)}
           ${pdfBtnHtml(book)}
           ${shareBtnHtml(book)}
         </div>
@@ -475,7 +494,270 @@ function openDetailModal(bookId) {
   setTimeout(() => modal.classList.add('visible'), 10);
 }
 
+const COMPANION_SUGGESTIONS = [
+  '用三句话讲清这本书的核心观点',
+  '整理一份适合学生执行的 SOP',
+  '这本书最值得质疑或反思的地方是什么？',
+];
+let _companionController = null;
+let _companionSending = false;
+
+function companionStorageKey(bookId) {
+  return `yibenshi-companion-${bookId}`;
+}
+
+function loadCompanionHistory(bookId) {
+  try {
+    const value = JSON.parse(localStorage.getItem(companionStorageKey(bookId)) || '[]');
+    return Array.isArray(value) ? value.slice(-12) : [];
+  } catch (_error) {
+    return [];
+  }
+}
+
+function saveCompanionHistory(bookId, messages) {
+  localStorage.setItem(companionStorageKey(bookId), JSON.stringify(messages.slice(-12)));
+}
+
+function appendAnswerContent(container, content, book) {
+  container.textContent = '';
+  const citationPattern = /\[第\s*(\d+)\s*页\]/g;
+  let cursor = 0;
+  let match;
+  while ((match = citationPattern.exec(content)) !== null) {
+    container.appendChild(document.createTextNode(content.slice(cursor, match.index)));
+    const link = document.createElement('a');
+    link.className = 'companion-citation';
+    link.href = `${siteAssetUrl(book.pdf || book.pdfUrl)}#page=${match[1]}`;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = `第 ${match[1]} 页 ↗`;
+    link.setAttribute('aria-label', `打开 PDF 第 ${match[1]} 页`);
+    container.appendChild(link);
+    cursor = citationPattern.lastIndex;
+  }
+  container.appendChild(document.createTextNode(content.slice(cursor)));
+}
+
+function messageNode(message, book) {
+  const item = document.createElement('div');
+  item.className = `companion-message companion-message-${message.role}${message.error ? ' is-error' : ''}`;
+
+  const label = document.createElement('div');
+  label.className = 'companion-message-label';
+  label.textContent = message.role === 'user' ? '你' : 'AI 伴读';
+
+  const content = document.createElement('div');
+  content.className = 'companion-message-content';
+  if (message.pending) {
+    content.innerHTML = '<span class="companion-thinking"><i></i><i></i><i></i></span><span>正在当前书籍中查找依据</span>';
+  } else if (message.role === 'assistant') {
+    appendAnswerContent(content, message.content, book);
+  } else {
+    content.textContent = message.content;
+  }
+  item.append(label, content);
+  return item;
+}
+
+function scrollCompanionToBottom() {
+  const list = document.getElementById('companionMessages');
+  if (list) list.scrollTop = list.scrollHeight;
+}
+
+function renderCompanionMessages(book) {
+  const list = document.getElementById('companionMessages');
+  if (!list) return;
+  const messages = loadCompanionHistory(book.id);
+  list.textContent = '';
+  if (!messages.length) {
+    const welcome = document.createElement('div');
+    welcome.className = 'companion-welcome';
+    welcome.innerHTML = `
+      <span class="companion-welcome-index">READ / THINK / APPLY</span>
+      <h3>不用从第一页读起，<br>从一个好问题开始。</h3>
+      <p>我只依据《${book.title}》的 PDF 回答。重要结论会附上页码，你可以随时回到原文核对。</p>`;
+    list.appendChild(welcome);
+  } else {
+    messages.forEach(message => list.appendChild(messageNode(message, book)));
+  }
+  requestAnimationFrame(scrollCompanionToBottom);
+}
+
+function openCompanion(bookId) {
+  const book = _allBooks.find(item => item.id === bookId);
+  if (!book || !(book.pdf || book.pdfUrl)) return;
+  closeAllModals();
+
+  const color = colorForId(book.id);
+  const modal = document.createElement('div');
+  modal.id = 'companionModal';
+  modal.className = 'share-modal companion-modal-root';
+  modal.innerHTML = `
+    <div class="share-modal-backdrop" onclick="closeAllModals()"></div>
+    <div class="companion-modal" role="dialog" aria-modal="true" aria-labelledby="companionTitle">
+      <button class="share-modal-close companion-close" onclick="closeAllModals()" aria-label="关闭">✕</button>
+      <aside class="companion-book-panel" style="--book-color:${color}">
+        <div class="companion-kicker">AI STUDY COMPANION · No.${String(book.id).padStart(2, '0')}</div>
+        <div class="companion-cover" style="background:${coverBackground(book, color)}"></div>
+        <div class="companion-book-copy">
+          <div class="companion-scope"><span></span>只检索当前 PDF</div>
+          <h2 id="companionTitle">${book.title}</h2>
+          <p>${book.author}</p>
+        </div>
+        <div class="companion-source-note">
+          <strong>有据可查</strong>
+          <span>点击回答中的页码，可在新网页打开 PDF 原文。</span>
+        </div>
+      </aside>
+      <section class="companion-chat-panel">
+        <header class="companion-chat-header">
+          <div>
+            <span class="companion-chat-eyebrow">和这本书对话</span>
+            <strong>高密度阅读实验室</strong>
+          </div>
+          <button type="button" class="companion-clear" onclick="clearCompanionChat(${book.id})">清空对话</button>
+        </header>
+        <div class="companion-messages" id="companionMessages" aria-live="polite"></div>
+        <div class="companion-suggestions" aria-label="推荐问题">
+          ${COMPANION_SUGGESTIONS.map(question => `<button type="button" onclick="askCompanionSuggestion(${book.id}, this)">${question}</button>`).join('')}
+        </div>
+        <form class="companion-composer" onsubmit="sendCompanionQuestion(event, ${book.id})">
+          <textarea id="companionInput" rows="1" maxlength="500" placeholder="例如：把这本书的方法变成我今天能做的三步" aria-label="向当前书籍提问"></textarea>
+          <button id="companionSend" type="submit" aria-label="发送问题">
+            <span>发送</span>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+          </button>
+        </form>
+        <p class="companion-disclaimer">AI 可能理解有误，请以页码对应的 PDF 原文为准。</p>
+      </section>
+    </div>`;
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+  renderCompanionMessages(book);
+
+  const input = document.getElementById('companionInput');
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 112)}px`;
+  });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      input.form.requestSubmit();
+    }
+  });
+  setTimeout(() => {
+    modal.classList.add('visible');
+    input.focus();
+  }, 10);
+}
+
+function clearCompanionChat(bookId) {
+  localStorage.removeItem(companionStorageKey(bookId));
+  const book = _allBooks.find(item => item.id === bookId);
+  if (book) renderCompanionMessages(book);
+}
+
+function askCompanionSuggestion(bookId, button) {
+  const input = document.getElementById('companionInput');
+  if (!input || _companionSending) return;
+  input.value = button.textContent.trim();
+  input.form.requestSubmit();
+}
+
+async function readCompanionStream(response, onContent) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let answer = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) {
+      if (!line.startsWith('data:')) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === '[DONE]') continue;
+      let data;
+      try { data = JSON.parse(payload); } catch (_error) { continue; }
+      if (data.error) throw new Error(typeof data.error === 'string' ? data.error : data.error.message);
+      const delta = data.choices?.[0]?.delta?.content || '';
+      if (delta) {
+        answer += delta;
+        onContent(answer);
+      }
+    }
+    if (done) break;
+  }
+  return answer.trim();
+}
+
+async function sendCompanionQuestion(event, bookId) {
+  event.preventDefault();
+  if (_companionSending) return;
+  const book = _allBooks.find(item => item.id === bookId);
+  const input = document.getElementById('companionInput');
+  const sendButton = document.getElementById('companionSend');
+  const question = input.value.trim();
+  if (!book || !question) return;
+
+  const previous = loadCompanionHistory(bookId);
+  const messages = [...previous, { role: 'user', content: question }];
+  saveCompanionHistory(bookId, messages);
+  renderCompanionMessages(book);
+  input.value = '';
+  input.style.height = 'auto';
+  _companionSending = true;
+  sendButton.disabled = true;
+
+  const list = document.getElementById('companionMessages');
+  const pending = { role: 'assistant', content: '', pending: true };
+  const node = messageNode(pending, book);
+  list.appendChild(node);
+  scrollCompanionToBottom();
+  const content = node.querySelector('.companion-message-content');
+  _companionController = new AbortController();
+
+  try {
+    const response = await fetch('/api/companion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookId,
+        question,
+        history: previous.slice(-6).map(({ role, content: text }) => ({ role, content: text })),
+      }),
+      signal: _companionController.signal,
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || 'AI 伴读暂时不可用，请稍后重试');
+    }
+
+    const answer = await readCompanionStream(response, partial => {
+      appendAnswerContent(content, partial, book);
+      scrollCompanionToBottom();
+    });
+    if (!answer) throw new Error('没有收到有效回答，请重新提问');
+    messages.push({ role: 'assistant', content: answer });
+    saveCompanionHistory(bookId, messages);
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+    node.classList.add('is-error');
+    appendAnswerContent(content, error.message || 'AI 伴读暂时不可用，请稍后重试', book);
+  } finally {
+    _companionController = null;
+    _companionSending = false;
+    if (sendButton && document.body.contains(sendButton)) sendButton.disabled = false;
+    if (input && document.body.contains(input)) input.focus();
+  }
+}
+
 function closeAllModals() {
+  if (_companionController) _companionController.abort();
+  _companionSending = false;
   document.querySelectorAll('.share-modal').forEach(m => {
     m.classList.remove('visible');
     setTimeout(() => m.remove(), 200);
