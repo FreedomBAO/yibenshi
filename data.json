@@ -1,6 +1,33 @@
 {
   "books": [
     {
+      "id": 59,
+      "date": "2026-09-02",
+      "title": "终身成长",
+      "originalTitle": "Mindset: The New Psychology of Success",
+      "author": "卡罗尔·德韦克",
+      "description": "斯坦福大学心理学家卡罗尔·德韦克用数十年研究解释固定型与成长型思维如何影响我们面对挑战、努力、失败和他人成就的反应。本期精读把这一理论转化为可练习的语言重构、失败复盘和能力训练流程，帮助你把“我不行”改写成“我还没学会”。",
+      "tags": [
+        "成长型思维",
+        "认知心理",
+        "个人成长"
+      ],
+      "highlights": [
+        "思维模式是行为的底层操作系统",
+        "把“我不行”改成“我还没会”",
+        "失败是信息而非身份判决"
+      ],
+      "action": "挑一件一直回避的困难任务，写下“我还没会”对应的具体下一步，并在 24 小时内迈出第一小步。",
+      "duration": "20分钟",
+      "rating": "",
+      "category": "认知与心理",
+      "cover": "",
+      "audio": "",
+      "audioUrl": "",
+      "pdf": "https://ngpe2pd9st5lh8dk.public.blob.vercel-storage.com/daily-books/2026/09/02/mindset-the-new-psychology-of-success-47d127090bf4e41a8211.pdf",
+      "pdfUrl": "https://ngpe2pd9st5lh8dk.public.blob.vercel-storage.com/daily-books/2026/09/02/mindset-the-new-psychology-of-success-47d127090bf4e41a8211.pdf"
+    },
+    {
       "id": 1,
       "date": "2026-05-29",
       "title": "思考，快与慢",
