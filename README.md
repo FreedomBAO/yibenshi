@@ -118,9 +118,9 @@ python tools/build_book_knowledge.py
 
 ## 🚀 快速开始
 
-### Coze 每日 PDF 自动接入
+### 本地 Agent 每日 PDF 自动接入
 
-Coze 通过 Base64 JSON 将每日 PDF 推送到 Vercel 接收接口；PDF 和待发布任务写入 Vercel Blob，之后由 Codex 管理任务完成 Git、部署与验收。字段、鉴权和响应格式见 [Coze 接收接口文档](./docs/coze-ingest-api.md)。
+本地 Agent 生成同名 PDF/JSON 后调用上传脚本；PDF 和待发布任务写入 Vercel Blob，之后由 Codex 管理任务完成 Git、部署与验收。生成文件和调用方式见 [本地 Agent 上传说明](./docs/local-agent-upload.md)，底层接口规格见 [接收接口文档](./docs/coze-ingest-api.md)。
 
 ### 本地预览
 
