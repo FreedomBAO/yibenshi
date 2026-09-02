@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -72,6 +73,61 @@ class UploadDailyBookTests(unittest.TestCase):
             path.write_text(json.dumps({"ok": True, "pdf_sha256": "abc"}), encoding="utf-8")
             self.assertIsNotNone(uploader.matching_receipt(path, "abc"))
             self.assertIsNone(uploader.matching_receipt(path, "different"))
+
+    def test_cleanup_local_artifacts_preserves_final_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            pdf_path = folder / "底层逻辑.pdf"
+            json_path = folder / "底层逻辑.json"
+            make_pdf(pdf_path)
+            json_path.write_text(json.dumps(valid_metadata()), encoding="utf-8")
+            artifacts = [
+                folder / "底层逻辑.pdf.tmp",
+                folder / "底层逻辑.pdf.bak",
+                folder / "底层逻辑.json.tmp",
+                folder / "底层逻辑.json.bak",
+                folder / ".build_底层逻辑.html",
+            ]
+            for artifact in artifacts:
+                artifact.write_text("temporary", encoding="utf-8")
+            unrelated = folder / "另一本书.pdf.tmp"
+            unrelated.write_text("keep", encoding="utf-8")
+
+            removed = uploader.cleanup_local_artifacts(pdf_path, json_path)
+            self.assertEqual(set(removed), {path.name for path in artifacts})
+            self.assertTrue(pdf_path.exists())
+            self.assertTrue(json_path.exists())
+            self.assertTrue(unrelated.exists())
+
+    def test_verify_uploaded_pdf_checks_type_size_and_hash(self):
+        content = b"%PDF-1.7\ncontent\n%%EOF\n"
+
+        class Response:
+            headers = {"Content-Type": "application/pdf"}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return None
+
+            def read(self, _limit):
+                return content
+
+        uploader.verify_uploaded_pdf(
+            "https://blob.example/book.pdf",
+            hashlib.sha256(content).hexdigest(),
+            len(content),
+            opener=lambda *_args, **_kwargs: Response(),
+        )
+
+        with self.assertRaisesRegex(uploader.UploadError, "SHA-256"):
+            uploader.verify_uploaded_pdf(
+                "https://blob.example/book.pdf",
+                "0" * 64,
+                len(content),
+                opener=lambda *_args, **_kwargs: Response(),
+            )
 
 
 if __name__ == "__main__":

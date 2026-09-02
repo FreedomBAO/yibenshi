@@ -13,7 +13,7 @@
 
 每次运行以北京时间日期创建 `run_id` 和幂等键，状态只能按以下方向推进：
 
-`created -> selected -> researched -> drafted -> rendered -> validated -> blob_uploaded -> catalog_committed -> deployed -> verified -> succeeded`
+`created -> selected -> researched -> drafted -> rendered -> validated -> blob_uploaded -> superseded_cleaned -> catalog_committed -> deployed -> verified -> succeeded`
 
 失败状态为 `failed`，并记录 `failed_stage`、`retryable`、`attempt`、`error_code` 和脱敏后的 `error_summary`。不得跳过 `validated` 直接上传，不得在 `catalog_committed` 前标记成功。
 
@@ -26,11 +26,12 @@
 5. **写作**：按固定内容结构生成 5 个洞见、至少 10 个例子和 5 套 SOP。
 6. **生成 PDF**：先生成本地中间稿，再生成最终 PDF 与封面图。
 7. **硬性验收**：运行内容、证据、PDF 与数据校验；输出验收 JSON。
-8. **上传 Blob**：上传最终 PDF 和必要封面，验证公开 URL。
-9. **更新目录**：更新 `data.json`，用本地通过验收的 PDF 重建 `knowledge/books.json`。
-10. **原子提交**：一次提交目录、知识库和运行清单；不得提交临时渲染图或密钥。
-11. **部署与冒烟测试**：等待 GitHub 触发的 production 部署，验证首页、详情页和 PDF 链接。
-12. **完成**：仅当线上验证通过时标记 `succeeded`。
+8. **上传 Blob**：上传最终 PDF 和必要封面，验证公开 URL、大小与 SHA-256；成功后删除同日同书且未发布的旧 pending PDF 与 manifest。
+9. **清理本地**：仅保留最终 PDF、同名 JSON 和最新上传回执；删除本次生成的 `.tmp`、`.bak` 与构建 HTML。内部 `sources.json` 保存在运行目录，不放入上传目录。
+10. **更新目录**：更新 `data.json`，用本地通过验收的 PDF 重建 `knowledge/books.json`。
+11. **原子提交**：一次提交目录、知识库和运行清单；不得提交临时渲染图或密钥。
+12. **部署与冒烟测试**：等待 GitHub 触发的 production 部署，验证首页、详情页和 PDF 链接。
+13. **完成**：仅当线上验证通过时标记 `succeeded`。
 
 ## 4. 原子性和幂等
 

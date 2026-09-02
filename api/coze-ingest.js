@@ -4,6 +4,8 @@ const MIN_PDF_BYTES = 50 * 1024;
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 const MAX_LISTED_JOBS = 20;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const JOB_ID_RE = /^[a-f0-9]{20}$/;
+const DEFAULT_CATALOG_URL = 'https://dailybooks-three.vercel.app/data.json';
 
 function sendJson(res, status, body) {
   res.statusCode = status;
@@ -174,6 +176,30 @@ async function findExact(blobClient, pathname) {
   return (result.blobs || []).find(blob => blob.pathname === pathname) || null;
 }
 
+async function readManifest(blob, fetchImpl) {
+  const response = await fetchImpl(blob.url, { cache: 'no-store' });
+  return response.ok ? response.json() : null;
+}
+
+function validPendingPdfPath(manifest) {
+  const pathname = manifest?.pdf?.pathname;
+  if (typeof pathname !== 'string' || !JOB_ID_RE.test(manifest?.jobId || '')) return false;
+  const folder = datePath(manifest.businessDate || '');
+  return pathname.startsWith(`daily-books/${folder}/`)
+    && pathname.endsWith(`-${manifest.jobId}.pdf`);
+}
+
+async function publishedPdfUrls(fetchImpl, catalogUrl) {
+  const response = await fetchImpl(catalogUrl, { cache: 'no-store' });
+  if (!response.ok) throw new Error('catalog unavailable');
+  const catalog = await response.json();
+  const books = Array.isArray(catalog)
+    ? catalog
+    : (Array.isArray(catalog?.books) ? catalog.books : []);
+  const urls = books.flatMap(book => [book?.pdf, book?.pdfUrl]).filter(Boolean);
+  return new Set(urls);
+}
+
 function publicJob(manifest) {
   return {
     jobId: manifest.jobId,
@@ -223,9 +249,90 @@ function createHandler({
       }
     }
 
+    if (req.method === 'DELETE') {
+      if (!env.COZE_INGEST_TOKEN || !env.BLOB_READ_WRITE_TOKEN) {
+        return sendJson(res, 503, { code: 'SERVICE_NOT_CONFIGURED', error: '清理接口尚未配置' });
+      }
+      if (!authenticate(req, env.COZE_INGEST_TOKEN)) {
+        return sendJson(res, 401, { code: 'UNAUTHORIZED', error: '接收令牌无效' });
+      }
+      if (!readHeader(req, 'content-type').toLowerCase().includes('application/json')) {
+        return sendJson(res, 415, { code: 'JSON_REQUIRED', error: 'Content-Type 必须是 application/json' });
+      }
+
+      let body;
+      try {
+        body = parseBody(req);
+      } catch (_error) {
+        return sendJson(res, 400, { code: 'INVALID_JSON', error: '请求体不是有效 JSON' });
+      }
+
+      const jobId = typeof body.job_id === 'string' ? body.job_id.trim() : '';
+      const requestedDate = typeof body.business_date === 'string' ? body.business_date.trim() : '';
+      const bookName = typeof body.book_name === 'string' ? body.book_name.trim() : '';
+      if (!JOB_ID_RE.test(jobId) || !DATE_RE.test(requestedDate) || !bookName || bookName.length > 100) {
+        return sendJson(res, 422, {
+          code: 'VALIDATION_FAILED',
+          error: 'job_id、business_date 或 book_name 无效',
+        });
+      }
+
+      try {
+        const blobClient = getBlobClient();
+        const prefix = `daily-books/_pending/${datePath(requestedDate)}/`;
+        const currentPath = `${prefix}${jobId}.json`;
+        const result = await blobClient.list({ prefix, limit: MAX_LISTED_JOBS });
+        const manifests = [];
+        for (const blob of result.blobs || []) {
+          if (!blob.pathname.endsWith('.json')) continue;
+          const manifest = await readManifest(blob, fetchImpl);
+          if (manifest) manifests.push({ blob, manifest });
+        }
+
+        const current = manifests.find(item => item.blob.pathname === currentPath)?.manifest;
+        if (!current || current.status !== 'pending' || current.metadata?.bookName !== bookName) {
+          return sendJson(res, 404, { code: 'CURRENT_JOB_NOT_FOUND', error: '当前待发布任务不存在或书名不匹配' });
+        }
+
+        const sameBook = manifests.filter(item => (
+          item.manifest.status === 'pending'
+          && item.manifest.businessDate === requestedDate
+          && item.manifest.metadata?.bookName === bookName
+        ));
+        if (sameBook.some(item => item.manifest.receivedAt > current.receivedAt)) {
+          return sendJson(res, 409, { code: 'CURRENT_JOB_NOT_NEWEST', error: '只能使用同书最新任务发起清理' });
+        }
+
+        const protectedUrls = await publishedPdfUrls(
+          fetchImpl,
+          env.PUBLIC_CATALOG_URL || DEFAULT_CATALOG_URL,
+        );
+        const deletedJobIds = [];
+        const protectedJobIds = [];
+        for (const item of sameBook) {
+          if (item.manifest.jobId === jobId || !validPendingPdfPath(item.manifest)) continue;
+          if (protectedUrls.has(item.manifest.pdf.url)) {
+            protectedJobIds.push(item.manifest.jobId);
+            continue;
+          }
+          await blobClient.del([item.blob.pathname, item.manifest.pdf.pathname]);
+          deletedJobIds.push(item.manifest.jobId);
+        }
+        return sendJson(res, 200, {
+          ok: true,
+          currentJobId: jobId,
+          deletedCount: deletedJobIds.length,
+          deletedJobIds,
+          protectedJobIds,
+        });
+      } catch (_error) {
+        return sendJson(res, 502, { code: 'BLOB_DELETE_FAILED', error: '旧待发布版本清理失败，当前版本未删除' });
+      }
+    }
+
     if (req.method !== 'POST') {
-      res.setHeader('Allow', 'GET, POST');
-      return sendJson(res, 405, { code: 'METHOD_NOT_ALLOWED', error: '仅支持 GET 和 POST 请求' });
+      res.setHeader('Allow', 'GET, POST, DELETE');
+      return sendJson(res, 405, { code: 'METHOD_NOT_ALLOWED', error: '仅支持 GET、POST 和 DELETE 请求' });
     }
 
     if (!env.COZE_INGEST_TOKEN || !env.BLOB_READ_WRITE_TOKEN) {
@@ -300,7 +407,7 @@ function createHandler({
         businessDate: date,
         timezone: 'Asia/Shanghai',
         receivedAt,
-        provider: 'coze',
+        provider: 'local-agent',
         originalFileName: validated.fileName,
         pdf: {
           url: pdfBlob.url,
@@ -341,6 +448,7 @@ module.exports._test = {
   businessDate,
   createHandler,
   decodePdfBase64,
+  publishedPdfUrls,
   slugify,
   validatePayload,
 };

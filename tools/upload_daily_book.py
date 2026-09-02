@@ -14,7 +14,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-DEFAULT_PDF_DIR = Path.home() / "Documents" / "DailyBooks" / "pdf"
+DEFAULT_PDF_DIR = Path.home() / "Coze" / "Drive" / "毛毛_cc的新项目" / "每日精读" / "output"
 DEFAULT_ENDPOINT = "https://dailybooks-three.vercel.app/api/coze-ingest"
 MIN_PDF_BYTES = 50 * 1024
 MAX_PDF_BYTES = 10 * 1024 * 1024
@@ -148,12 +148,18 @@ def build_payload(pdf_path: Path, json_path: Path) -> tuple[dict[str, Any], str]
     }, pdf_hash
 
 
-def post_payload(endpoint: str, token: str, payload: dict[str, Any]) -> dict[str, Any]:
+def request_json(
+    endpoint: str,
+    token: str,
+    payload: dict[str, Any],
+    method: str,
+    opener=urlopen,
+) -> dict[str, Any]:
     body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     request = Request(
         endpoint,
         data=body,
-        method="POST",
+        method=method,
         headers={
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
@@ -161,7 +167,7 @@ def post_payload(endpoint: str, token: str, payload: dict[str, Any]) -> dict[str
         },
     )
     try:
-        with urlopen(request, timeout=120) as response:
+        with opener(request, timeout=120) as response:
             result = json.loads(response.read().decode("utf-8"))
     except HTTPError as error:
         try:
@@ -181,6 +187,45 @@ def post_payload(endpoint: str, token: str, payload: dict[str, Any]) -> dict[str
     return result
 
 
+def post_payload(endpoint: str, token: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return request_json(endpoint, token, payload, "POST")
+
+
+def verify_uploaded_pdf(
+    url: str,
+    expected_hash: str,
+    expected_size: int,
+    opener=urlopen,
+) -> None:
+    if not isinstance(url, str) or not url.startswith("https://"):
+        raise UploadError("接收接口没有返回有效的 PDF URL")
+    request = Request(url, headers={"User-Agent": "daily-book-local-uploader/1.0"})
+    try:
+        with opener(request, timeout=120) as response:
+            content_type = response.headers.get("Content-Type", "").split(";", 1)[0].lower()
+            content = response.read(MAX_PDF_BYTES + 1)
+    except (HTTPError, URLError, TimeoutError) as error:
+        raise UploadError(f"新版 PDF 已上传但无法公开读取：{error}") from error
+    if content_type != "application/pdf":
+        raise UploadError(f"新版 PDF Content-Type 错误：{content_type or 'missing'}")
+    if len(content) != expected_size or hashlib.sha256(content).hexdigest() != expected_hash:
+        raise UploadError("新版 PDF 远端大小或 SHA-256 与本地不一致")
+
+
+def cleanup_superseded_jobs(
+    endpoint: str,
+    token: str,
+    job_id: str,
+    business_date: str,
+    book_name: str,
+) -> dict[str, Any]:
+    return request_json(endpoint, token, {
+        "job_id": job_id,
+        "business_date": business_date,
+        "book_name": book_name,
+    }, "DELETE")
+
+
 def receipt_path(pdf_path: Path) -> Path:
     return pdf_path.with_suffix(".uploaded.json")
 
@@ -195,7 +240,35 @@ def matching_receipt(path: Path, pdf_hash: str) -> dict[str, Any] | None:
     return receipt if receipt.get("pdf_sha256") == pdf_hash and receipt.get("ok") is True else None
 
 
-def save_receipt(path: Path, result: dict[str, Any], pdf_hash: str) -> None:
+def write_json_atomic(path: Path, value: dict[str, Any]) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def cleanup_local_artifacts(pdf_path: Path, json_path: Path) -> list[str]:
+    candidates = [
+        pdf_path.with_name(pdf_path.name + ".tmp"),
+        pdf_path.with_name(pdf_path.name + ".bak"),
+        json_path.with_name(json_path.name + ".tmp"),
+        json_path.with_name(json_path.name + ".bak"),
+        pdf_path.parent / f".build_{pdf_path.stem}.html",
+    ]
+    removed = []
+    for candidate in candidates:
+        if candidate.is_file():
+            candidate.unlink()
+            removed.append(candidate.name)
+    return removed
+
+
+def save_receipt(
+    path: Path,
+    result: dict[str, Any],
+    pdf_hash: str,
+    remote_cleanup: dict[str, Any],
+    local_removed: list[str],
+) -> None:
     job = result.get("job") if isinstance(result.get("job"), dict) else {}
     safe_receipt = {
         "ok": True,
@@ -206,10 +279,13 @@ def save_receipt(path: Path, result: dict[str, Any], pdf_hash: str) -> None:
         "business_date": job.get("businessDate"),
         "pdf_url": (job.get("pdf") or {}).get("url") if isinstance(job.get("pdf"), dict) else None,
         "manifest_url": result.get("manifestUrl"),
+        "cleanup": {
+            "deleted_job_ids": remote_cleanup.get("deletedJobIds", []),
+            "protected_job_ids": remote_cleanup.get("protectedJobIds", []),
+            "local_removed": local_removed,
+        },
     }
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(safe_receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    write_json_atomic(path, safe_receipt)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -232,8 +308,26 @@ def main(argv: list[str] | None = None) -> int:
     try:
         pdf_path, json_path = find_pdf_json_pair(args.pdf_dir.resolve(), args.pdf)
         payload, pdf_hash = build_payload(pdf_path, json_path)
+        pdf_size = len(base64.b64decode(payload["file_base64"]))
         existing = matching_receipt(receipt_path(pdf_path), pdf_hash)
         if existing and not args.force:
+            if not token:
+                raise UploadError("缺少 COZE_INGEST_TOKEN，请配置项目根目录 .env.local")
+            verify_uploaded_pdf(str(existing.get("pdf_url") or ""), pdf_hash, pdf_size)
+            remote_cleanup = cleanup_superseded_jobs(
+                endpoint,
+                token,
+                str(existing.get("job_id") or ""),
+                str(existing.get("business_date") or ""),
+                payload["book_name"],
+            )
+            local_removed = cleanup_local_artifacts(pdf_path, json_path)
+            existing["cleanup"] = {
+                "deleted_job_ids": remote_cleanup.get("deletedJobIds", []),
+                "protected_job_ids": remote_cleanup.get("protectedJobIds", []),
+                "local_removed": local_removed,
+            }
+            write_json_atomic(receipt_path(pdf_path), existing)
             print(json.dumps({"ok": True, "skipped": True, "reason": "already_uploaded", **existing}, ensure_ascii=False))
             return 0
         if args.dry_run:
@@ -242,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
                 "dry_run": True,
                 "pdf": str(pdf_path),
                 "json": str(json_path),
-                "pdf_bytes": len(base64.b64decode(payload["file_base64"])),
+                "pdf_bytes": pdf_size,
                 "book_name": payload["book_name"],
             }, ensure_ascii=False))
             return 0
@@ -250,14 +344,27 @@ def main(argv: list[str] | None = None) -> int:
             raise UploadError("缺少 COZE_INGEST_TOKEN，请配置项目根目录 .env.local")
 
         result = post_payload(endpoint, token, payload)
-        save_receipt(receipt_path(pdf_path), result, pdf_hash)
         job = result.get("job", {})
+        pdf_url = (job.get("pdf") or {}).get("url")
+        verify_uploaded_pdf(pdf_url, pdf_hash, pdf_size)
+        remote_cleanup = cleanup_superseded_jobs(
+            endpoint,
+            token,
+            str(job.get("jobId") or ""),
+            str(job.get("businessDate") or ""),
+            payload["book_name"],
+        )
+        local_removed = cleanup_local_artifacts(pdf_path, json_path)
+        save_receipt(receipt_path(pdf_path), result, pdf_hash, remote_cleanup, local_removed)
         print(json.dumps({
             "ok": True,
             "duplicate": bool(result.get("duplicate")),
             "job_id": job.get("jobId"),
             "status": job.get("status"),
-            "pdf_url": (job.get("pdf") or {}).get("url"),
+            "pdf_url": pdf_url,
+            "deleted_job_ids": remote_cleanup.get("deletedJobIds", []),
+            "protected_job_ids": remote_cleanup.get("protectedJobIds", []),
+            "local_removed": local_removed,
         }, ensure_ascii=False))
         return 0
     except UploadError as error:

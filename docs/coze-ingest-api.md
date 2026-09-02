@@ -1,4 +1,4 @@
-# Coze 每日精读接收接口
+# 本地 Agent 每日精读接收接口
 
 ## 对接参数
 
@@ -9,7 +9,7 @@
 - 文件格式：PDF Base64 字符串，不使用 multipart。
 - PDF 限制：50 KB-10 MB，必须包含有效的 `%PDF-` 文件头和 `%%EOF` 结束标记。
 
-`COZE_INGEST_TOKEN` 是双方共享密钥，只保存在 Coze 的密钥配置与 Vercel Production 环境变量中，不写进工作流正文、仓库或日志。
+`COZE_INGEST_TOKEN` 是兼容保留的接收密钥名，只保存在本地 `.env.local` 与 Vercel Production 环境变量中，不写进 Agent 指令、仓库或日志。
 
 ## 请求 JSON
 
@@ -76,6 +76,20 @@
 ```
 
 相同 PDF 和相同元数据重复推送时返回 HTTP `200`、`duplicate: true`，不会重复写入。
+
+## 清理旧 pending 版本
+
+新版上传并验证可公开读取后，上传器调用同一 URL 的 `DELETE`，使用相同 Bearer Token：
+
+```json
+{
+  "job_id": "当前最新 job_id",
+  "business_date": "2026-09-03",
+  "book_name": "底层逻辑"
+}
+```
+
+服务端只删除同一日期、同一书名、状态为 `pending` 且早于当前 job 的 PDF 和 manifest。当前 job 必须是同书最新任务；客户端不能传 Blob 路径，因此无法借此删除任意文件。删除前还会读取生产 `data.json`，网站已引用的 PDF 一律进入 `protectedJobIds` 而不删除；生产目录不可读取时清理失败并保持所有文件。
 
 ## 错误响应
 

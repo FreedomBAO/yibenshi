@@ -17,6 +17,8 @@ daily-books/YYYY/MM/DD/{slug}-{content-version}-cover.webp
 - 上传后以公开 URL 获取文件，验证 200、`Content-Type: application/pdf`、大小和本地文件一致。
 - 不在日志或仓库中保存 `BLOB_READ_WRITE_TOKEN`。
 
+新版验证成功后，清理同一业务日期、同一书名且状态仍为 `pending` 的旧版本 manifest 与 PDF。当前 job 必须是同书最新任务；不得接受调用方传入任意 Blob 路径，不得删除 `data.json` 已引用的正式 PDF。清理失败时保留当前版本并报告，不得扩大删除范围。
+
 ## 2. `data.json` 兼容契约
 
 发布前以现有 `data.json` 实际结构为准。当前必需字段为：

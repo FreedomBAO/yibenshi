@@ -15,7 +15,7 @@
 默认目录：
 
 ```text
-C:\Users\67139\Documents\DailyBooks\pdf
+C:\Users\67139\Coze\Drive\毛毛_cc的新项目\每日精读\output
 ```
 
 每次必须生成同名文件对：
@@ -26,6 +26,8 @@ C:\Users\67139\Documents\DailyBooks\pdf
 ```
 
 生成过程中可先使用临时扩展名，全部写完并关闭文件后再改为 `.pdf` 和 `.json`，避免上传脚本读到半成品。
+
+读者版 PDF 不显示引用编号、URL 或参考资料页。研究来源仍需保存到运行目录的 `sources.json`，但不要放进此上传目录。
 
 ## JSON 模板
 
@@ -51,7 +53,7 @@ C:\Users\67139\Documents\DailyBooks\pdf
 本地 Agent 在 PDF 和 JSON 都生成完成后执行：
 
 ```powershell
-& "D:\每天精读一本书\tools\upload_daily_book.cmd" --pdf "C:\Users\67139\Documents\DailyBooks\pdf\底层逻辑.pdf"
+& "D:\每天精读一本书\tools\upload_daily_book.cmd" --pdf "C:\Users\67139\Coze\Drive\毛毛_cc的新项目\每日精读\output\底层逻辑.pdf"
 ```
 
 如果 Agent 无法确定当天文件名，可执行：
@@ -89,5 +91,7 @@ C:\Users\67139\Documents\DailyBooks\pdf
 ```
 
 相同 PDF 已有成功回执时，脚本直接返回 `already_uploaded`；使用 `--force` 才会再次请求。接口本身也按 PDF 和元数据保持幂等。
+
+新版 PDF 上传并完成公开 URL、大小和 SHA-256 验证后，脚本会删除同日同书的旧 pending Blob/manifest，并清理当前书籍的 `.tmp`、`.bak` 和 `.build_书名.html`。删除前不会动旧版本；不会删除其他书籍或调用方指定的任意路径。
 
 密钥只从项目根目录 `.env.local` 或进程环境变量读取，不写入命令、JSON、回执或日志。
