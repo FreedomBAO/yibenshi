@@ -1394,8 +1394,10 @@ body {
 .companion-source-note span { font-size: 10px; line-height: 1.7; opacity: 0.62; }
 .companion-chat-panel {
   min-width: 0;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  overflow: hidden;
   padding: 27px 32px 18px;
   background:
     linear-gradient(rgba(120,100,75,0.045) 1px, transparent 1px),
@@ -1432,6 +1434,9 @@ body {
 .companion-messages {
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   padding: 22px 7px 18px 0;
   scrollbar-width: thin;
   scrollbar-color: #C8BFB2 transparent;
