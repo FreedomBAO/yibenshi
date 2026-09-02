@@ -1,28 +1,57 @@
-# 每天精读一本书
+<div align="center">
+  <h1>每天精读一本书</h1>
+  <p><strong>面向学生的高信息密度 AI 阅读应用</strong></p>
+  <p>不必从第一页读起，从一个好问题开始。</p>
+  <p>
+    <a href="https://dailybooks-three.vercel.app/">在线体验</a>
+    ·
+    <a href="./TODO.md">产品路线图</a>
+  </p>
+</div>
 
-## AI 伴读配置
+---
 
-网站会为每本书建立独立的 PDF 知识库。访客从某本书打开「AI 伴读」后，回答只引用当前书籍，并可通过页码跳转回 PDF 原文。
+## 为什么做这个项目？
 
-部署前在 Vercel 项目的 **Settings → Environment Variables** 添加：
+很多人并不是不想学习，而是没有足够时间读完一本书。
 
-- `DEEPSEEK_API_KEY`：DeepSeek API 密钥（必填，只保存在服务端）
-- `DEEPSEEK_MODEL`：模型名称，默认 `deepseek-v4-flash`
-- `DEEPSEEK_BASE_URL`：可选，默认 `https://api.deepseek.com`
+传统书摘虽然能快速提供结论，却经常脱离原文；通用 AI 可以回答问题，但可能混入其他知识，用户很难判断答案是否可靠。
 
-保存环境变量后重新部署一次。没有配置密钥时，伴读界面会显示「AI 服务待配置」，网站的其他功能不受影响。
+我希望做一个更适合学生和高密度学习者的阅读工具：
 
-书籍 PDF 变化后，在项目根目录重新生成知识库：
+- 快速了解一本书的核心观点；
+- 把知识转化成能够立即执行的 SOP；
+- 可以直接向当前书籍提问；
+- 每个重要结论都能回到 PDF 原文核对。
 
-```powershell
-python tools/build_book_knowledge.py
-```
+## 产品方案
 
-> 每天一本好书的精华解读，与智慧同行。
+「每天精读一本书」目前收录了 58 本书的精读内容，覆盖认知心理、个人成长、学习方法、商业创新等 10 个分类。
 
-一个每日推荐一本书的静态网站，包含 58 本经典书的精读内容、深度书评、核心要点、行动建议。
+核心功能是“当前书籍 AI 伴读”：
 
-**在线预览**：[Vercel](https://dailybooks-three.vercel.app/) ｜ **仓库**：[FreedomBAO/yibenshi](https://github.com/FreedomBAO/yibenshi)
+1. 将每本 PDF 提取为带页码的文本片段；
+2. 根据问题只检索当前打开的书；
+3. 将相关内容发送给 DeepSeek 生成回答；
+4. 通过流式传输实时显示结果；
+5. 为关键结论标注 PDF 页码，点击即可查看原文。
+
+这让 AI 不只是给出答案，也能说明答案来自哪里。
+
+![AI 伴读演示](./docs/images/ai-companion.png)
+
+## 核心能力
+
+- **58 本精读书库**：书评、核心观点、行动建议、封面与 PDF。
+- **当前书籍 RAG**：不同书籍的知识相互隔离，减少内容混淆。
+- **可追溯引用**：回答附带 PDF 页码，可以直接打开原文。
+- **流式 AI 对话**：通过 Vercel Function 安全调用 DeepSeek API。
+- **本地内容后台**：支持封面搜索、批量 PDF 匹配和一键发布。
+- **多端适配**：支持电脑和手机浏览、提问与在线阅读。
+
+## 技术概览
+
+`HTML / CSS / JavaScript` · `Vercel Functions` · `DeepSeek API` · `PDF 文本提取` · `当前书籍检索` · `SSE 流式传输` · `GitHub 自动部署`
 
 ---
 
@@ -64,6 +93,26 @@ python tools/build_book_knowledge.py
 4. 浏览器自动记住 Token，下次通过同一启动脚本进入后台
 
 > Token 只存在浏览器 `localStorage`，**不会上传到任何服务器**。仓库路径可改成你自己的 fork（要先 fork 一份再粘贴）。
+
+---
+
+## AI 伴读配置
+
+网站会为每本书建立独立的 PDF 知识库。访客从某本书打开「AI 伴读」后，回答只引用当前书籍，并可通过页码跳转回 PDF 原文。
+
+部署前在 Vercel 项目的 **Settings → Environment Variables** 添加：
+
+- `DEEPSEEK_API_KEY`：DeepSeek API 密钥（必填，只保存在服务端）
+- `DEEPSEEK_MODEL`：模型名称，默认 `deepseek-v4-flash`
+- `DEEPSEEK_BASE_URL`：可选，默认 `https://api.deepseek.com`
+
+保存环境变量后重新部署一次。没有配置密钥时，伴读界面会显示「AI 服务待配置」，网站的其他功能不受影响。
+
+书籍 PDF 变化后，在项目根目录重新生成知识库：
+
+```powershell
+python tools/build_book_knowledge.py
+```
 
 ---
 
