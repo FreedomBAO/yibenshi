@@ -2,6 +2,9 @@
   "functions": {
     "api/companion.js": {
       "maxDuration": 90
+    },
+    "api/coze-ingest.js": {
+      "maxDuration": 90
     }
   }
 }

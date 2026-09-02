@@ -1,0 +1,14 @@
+{
+  "name": "yibenshi",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.8.0"
+  }
+}

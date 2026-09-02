@@ -1,4 +1,5 @@
 node_modules/
+.pnpm-store/
 .claude/
 *.local
 .env.local
@@ -18,8 +19,12 @@ node_modules/
 # Claude Code 安装包
 Claude Setup.exe
 
-# Skills 系统目录（避免污染主仓库）
-.agents/
+# Skills 系统目录（默认忽略，仅版本化本项目的每日图书流水线规范）
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/daily-book-pdf-pipeline/
+!.agents/skills/daily-book-pdf-pipeline/**
 skills-lock.json
 
 # 系统文件
