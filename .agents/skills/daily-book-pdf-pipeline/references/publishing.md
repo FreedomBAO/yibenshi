@@ -33,12 +33,12 @@ daily-books/YYYY/MM/DD/{slug}-{content-version}-cover.webp
   "highlights": ["洞见1", "洞见2", "洞见3"],
   "action": "今天可以执行的一项动作",
   "duration": "20分钟",
-  "rating": 4.8,
+  "rating": "",
   "category": "主题分类",
-  "cover": "https://...",
-  "audio": false,
+  "cover": "",
+  "audio": "",
   "audioUrl": "",
-  "pdf": true,
+  "pdf": "https://...pdf",
   "pdfUrl": "https://...pdf"
 }
 ```
@@ -50,7 +50,9 @@ daily-books/YYYY/MM/DD/{slug}-{content-version}-cover.webp
 - `date` 使用业务日期，即北京时间日期。
 - `highlights` 是 PDF 5 个洞见中最重要的 3 个短句，不复制长段正文。
 - `action` 必须能在当天执行并留下可检查产物。
-- `pdfUrl` 使用已验证的 public Blob URL。
+- `pdf` 和 `pdfUrl` 都使用同一个已验证的 public Blob URL，以兼容现有页面逻辑。
+- `rating` 不是 Coze v1 的必填字段；没有可核实评分时传空字符串，由页面使用现有展示兜底，不在管理流程中伪造评分。
+- 新内容没有音频时，`audio` 和 `audioUrl` 传空字符串。
 - `cover` 优先使用已获授权或可合理公开使用的封面；不确定时生成项目自己的文字封面，不盗链受限图片。
 - 新增审计字段前先确认 `script.js` 和知识库构建脚本可忽略未知字段；未验证兼容性时不要扩展 schema。
 
