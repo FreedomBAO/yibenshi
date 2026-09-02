@@ -51,20 +51,22 @@ C:\Users\67139\Documents\DailyBooks\pdf
 本地 Agent 在 PDF 和 JSON 都生成完成后执行：
 
 ```powershell
-python "D:\每天精读一本书\tools\upload_daily_book.py" --pdf "C:\Users\67139\Documents\DailyBooks\pdf\底层逻辑.pdf"
+& "D:\每天精读一本书\tools\upload_daily_book.cmd" --pdf "C:\Users\67139\Documents\DailyBooks\pdf\底层逻辑.pdf"
 ```
 
 如果 Agent 无法确定当天文件名，可执行：
 
 ```powershell
-python "D:\每天精读一本书\tools\upload_daily_book.py"
+& "D:\每天精读一本书\tools\upload_daily_book.cmd"
 ```
 
 脚本会选择输出目录中最新的完整 PDF/JSON 文件对。首次接入时可先运行：
 
 ```powershell
-python "D:\每天精读一本书\tools\upload_daily_book.py" --dry-run
+& "D:\每天精读一本书\tools\upload_daily_book.cmd" --dry-run
 ```
+
+启动包装器会依次寻找系统 `python`、Windows `py`，最后回退到 Codex 自带的 Python，因此本地 Agent 不需要预先配置 Python PATH。
 
 ## 成功判定
 
