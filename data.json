@@ -1,6 +1,33 @@
 {
   "books": [
     {
+      "id": 60,
+      "date": "2026-09-04",
+      "title": "格鲁夫给经理人的第一课",
+      "originalTitle": "High Output Management",
+      "author": "安迪·格鲁夫",
+      "description": "英特尔前 CEO 安迪·格鲁夫把管理拆成一套可设计的工程：从“下一道工序”、时间杠杆、一对一会议，到任务相关成熟度，帮助管理者把个人努力转化为团队产出。本期精读结合案例与五套 SOP，让普通读者也能练习交付、会议、授权和复盘。",
+      "tags": [
+        "管理方法",
+        "团队协作",
+        "自我管理"
+      ],
+      "highlights": [
+        "管理者的产出，是团队与相邻团队的产出",
+        "把时间从低杠杆活动转向高杠杆活动",
+        "授权深浅应随任务相关成熟度变化"
+      ],
+      "action": "今天挑一件你重复做过三次以上的事，把它写成一份模板或清单并分享给协作的同事，让一次投入开始被反复使用。",
+      "duration": "20分钟",
+      "rating": "",
+      "category": "管理与职业",
+      "cover": "",
+      "audio": "",
+      "audioUrl": "",
+      "pdf": "https://ngpe2pd9st5lh8dk.public.blob.vercel-storage.com/daily-books/2026/09/04/high-output-management-68eba343013e81ad92c0.pdf",
+      "pdfUrl": "https://ngpe2pd9st5lh8dk.public.blob.vercel-storage.com/daily-books/2026/09/04/high-output-management-68eba343013e81ad92c0.pdf"
+    },
+    {
       "id": 59,
       "date": "2026-09-02",
       "title": "终身成长",
