@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="每天精读一本书 - 每日分享一本好书的精华解读，附书评、核心要点与行动建议。涵盖认知心理、个人成长、商业创新、金融经济等多个领域。">
+  <meta name="keywords" content="每日阅读,书籍精读,认知心理,个人成长,商业创新,金融经济,读书笔记,AI产品">
+  <meta name="author" content="FreedomBAO">
+  <link rel="canonical" href="https://dailybooks-three.vercel.app/library.html">
+
+  <!-- Open Graph / 社交分享 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="阅读书库 · 每天精读一本书">
+  <meta property="og:description" content="每天一本好书的精华解读，与智慧同行。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:url" content="https://dailybooks-three.vercel.app/library.html">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="每天精读一本书">
+  <meta name="twitter:description" content="每天一本好书的精华解读">
+
+  <title>阅读书库 · 每天精读一本书</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23F4EFE6'/%3E%3Ctext x='50' y='66' font-size='56' text-anchor='middle' fill='%238B1A1A' font-family='serif' font-weight='bold'%3E书%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="library.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Skip link (无障碍) -->
+  <a href="#main" class="skip-link">跳转到主内容</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="header-issue"><span class="status-dot"></span> DAILY READING · Vol. 2026</div>
+        <h1 class="site-title">每天精读一本书</h1>
+        <p class="site-tagline">每天精读一本书，与智慧同行</p>
+      </div>
+      <div class="header-right">
+        <div class="header-date" id="headerDate"></div>
+        <nav class="header-nav">
+          <a href="index.html">返回官网 ↗</a>
+          <a href="#booksSection">书库</a>
+          <a href="#aboutSection">关于</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="library-intro"><span>THE READING ROOM</span><h2>今天，想读懂什么？</h2><p>从一本书、一个问题，或一次好奇开始。</p><a href="#booksSection" onclick="clearLibraryFilters()">探索全部书籍 ↓</a></div>
+    <p class="sr-only" id="bookChangeStatus" role="status" aria-live="polite"></p>
+    <section class="hero-section" id="heroSection">
+      <div class="loading-state">正在加载今日推荐…</div>
+    </section>
+
+    <section class="books-section" id="booksSection">
+      <div class="section-header">
+        <span class="section-label">ARCHIVE</span>
+        <h2 class="section-title">探索书库</h2>
+        <span class="archive-count" id="archiveCount" aria-live="polite"></span>
+      </div>
+
+      <div class="search-filter-bar">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="6.5" cy="6.5" r="4.5"/>
+            <line x1="10" y1="10" x2="14" y2="14"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="搜索书名、作者、内容…" autocomplete="off" aria-label="搜索书籍">
+          <button class="search-clear" id="searchClear" aria-label="清除搜索">✕</button>
+        </div>
+        <div class="filter-chips" id="filterChips" role="toolbar" aria-label="分类筛选"></div>
+        <div class="filter-meta">
+          <span class="keyboard-hint">提示：按 <kbd>空格</kbd> 播放 · <kbd>R</kbd> 换一本 · <kbd>Esc</kbd> 关闭</span>
+        </div>
+      </div>
+
+      <div class="filter-summary" id="filterSummary" hidden>
+        <p id="filterSummaryText"></p>
+        <button type="button" id="resetFilters" onclick="clearLibraryFilters()">查看全部书籍 ↗</button>
+      </div>
+      <p class="library-visible-count" id="visibleBookCount" aria-live="polite"></p>
+      <div class="books-grid" id="booksGrid"></div>
+      <div class="empty-search" id="emptySearch" style="display:none">没有找到相关书籍</div>
+    </section>
+
+    <!-- 关于区块 -->
+    <section class="about-section" id="aboutSection">
+      <div class="about-inner">
+        <div class="about-header">
+          <span class="section-label">ABOUT</span>
+          <h2 class="section-title">关于这个网站</h2>
+        </div>
+        <p class="about-text">
+          「每天精读一本书」是一个个人读书项目。我会从认知心理、个人成长、商业创新、金融经济等
+          跨学科书籍中精选一本，给出深度书评、核心要点与可执行的行动建议。
+        </p>
+        <p class="about-text">
+          精读是通往一本书的入口，不是原作的替代。你可以通过 AI 伴读继续追问，回到精读 PDF 核对内容，再把有启发的观点用在自己的生活里。
+        </p>
+
+        <div class="theme-section">
+          <div class="theme-section-title">选择主题</div>
+          <div class="theme-switcher" id="themeSwitcher"></div>
+        </div>
+
+        <div class="about-cta">
+          <a href="admin.html" class="about-link">📝 访客管理面板（添加书籍）→</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">每天精读一本书</p>
+      <p class="footer-sub">每天一本，与智慧同行 · <span id="footerYear"></span></p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js" async></script>
+  <script src="main.js" async></script>
+</body>
+</html>

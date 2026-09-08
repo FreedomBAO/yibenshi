@@ -1,6 +1,6 @@
 <div align="center">
   <h1>每天精读一本书</h1>
-  <p><strong>面向学生的高信息密度 AI 阅读应用</strong></p>
+  <p><strong>面向每个好奇心的个人阅读项目</strong></p>
   <p>不必从第一页读起，从一个好问题开始。</p>
   <p>
     <a href="https://dailybooks-three.vercel.app/">在线体验</a>
@@ -17,7 +17,7 @@
 
 传统书摘虽然能快速提供结论，却经常脱离原文；通用 AI 可以回答问题，但可能混入其他知识，用户很难判断答案是否可靠。
 
-我希望做一个更适合学生和高密度学习者的阅读工具：
+我希望做一个让大众更容易开始、理解并运用阅读的工具：
 
 - 快速了解一本书的核心观点；
 - 把知识转化成能够立即执行的 SOP；
@@ -124,7 +124,14 @@ python tools/build_book_knowledge.py
 
 ### 本地预览
 
-直接双击 `index.html` 在浏览器打开即可（无需服务器）。
+在项目根目录运行 `npm run dev`，访问 `http://127.0.0.1:8765/`。若端口占用，先关闭旧的 Python 静态预览服务。
+
+- `index.html` 是品牌官网：阅读理念、三步体验、分类入口和项目介绍。
+- `library.html` 是独立书库：今日推荐、搜索筛选、精读 PDF、AI 伴读、主题和分享。
+- 支持 `library.html?book=3` 直达书籍详情，`?book=3&action=ai` 打开伴读，`?category=个人成长` 进入分类。
+- 首页 GSAP 动效尊重系统“减少动态效果”偏好；动画库不可用时仍能浏览并进入书库。
+
+本地预览仅监听回环地址，通过固定代理将 `/api/companion` 请求发送到现有 Vercel 线上伴读接口，保留流式输出。提问会使用线上 AI 服务及其额度；本地不需要也不会读取生产 API Key。后台管理仍使用原有启动脚本。不要使用 Python 纯静态服务器测试伴读功能。
 
 ### 部署到 Vercel（推荐）
 
@@ -138,7 +145,10 @@ python tools/build_book_knowledge.py
 
 ```
 每天精读一本书/
-├── index.html              # 主站首页
+├── index.html              # 品牌官网
+├── landing.css / landing.js # 官网独立样式、动效与阅读体验切换
+├── library.html            # 独立阅读书库
+├── library.css             # 书库视觉样式（不影响后台）
 ├── admin.html              # 书籍管理面板（添加新书）
 ├── main.js                 # 主站脚本（含详情弹窗、主题、快捷键）
 ├── admin.js                # 管理面板脚本

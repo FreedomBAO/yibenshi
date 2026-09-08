@@ -3,118 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="每天精读一本书 - 每日分享一本好书的精华解读，附书评、核心要点与行动建议。涵盖认知心理、个人成长、商业创新、金融经济等多个领域。">
-  <meta name="keywords" content="每日阅读,书籍精读,认知心理,个人成长,商业创新,金融经济,读书笔记,AI产品">
-  <meta name="author" content="FreedomBAO">
-  <link rel="canonical" href="https://dailybooks-three.vercel.app/">
-
-  <!-- Open Graph / 社交分享 -->
+  <meta name="description" content="把一本书，读进生活里。发现好书、读懂核心观点，与 AI 伴读一起追问，把阅读变成具体的行动。一个面向每个好奇心的个人读书项目。">
+  <meta name="theme-color" content="#f7f8fa">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="每天精读一本书">
-  <meta property="og:description" content="每天一本好书的精华解读，与智慧同行。">
-  <meta property="og:locale" content="zh_CN">
+  <meta property="og:title" content="每天精读一本书 · 把一本书，读进生活里">
+  <meta property="og:description" content="从一个好奇的问题开始，发现好书，理解观点，把阅读变成行动。">
   <meta property="og:url" content="https://dailybooks-three.vercel.app/">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="每天精读一本书">
-  <meta name="twitter:description" content="每天一本好书的精华解读">
-
-  <title>每天精读一本书 - 与智慧同行</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23F4EFE6'/%3E%3Ctext x='50' y='66' font-size='56' text-anchor='middle' fill='%238B1A1A' font-family='serif' font-weight='bold'%3E书%3C/text%3E%3C/svg%3E">
+  <link rel="canonical" href="https://dailybooks-three.vercel.app/">
+  <title>每天精读一本书 · 把一本书，读进生活里</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232d48d7'/%3E%3Cpath d='M15 17h12l5 4 5-4h12v30H37l-5 4-5-4H15zM32 21v30' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.loli.net">
   <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
-  <link href="https://fonts.loli.net/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <link href="https://fonts.loli.net/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
+  <script defer src="landing.js"></script>
 </head>
 <body>
-
-  <!-- Skip link (无障碍) -->
-  <a href="#main" class="skip-link">跳转到主内容</a>
-
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="header-left">
-        <div class="header-issue">DAILY READING · Vol. 2026</div>
-        <h1 class="site-title">每天精读一本书</h1>
-        <p class="site-tagline">每天精读一本书，与智慧同行</p>
-      </div>
-      <div class="header-right">
-        <div class="header-date" id="headerDate"></div>
-        <nav class="header-nav">
-          <a href="#booksSection">书单</a>
-          <a href="#aboutSection">关于</a>
-        </nav>
-      </div>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-nav">
+    <div class="nav-inner wrap">
+      <a class="brand" href="index.html" aria-label="每天精读一本书，首页"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M4 6h8l4 3 4-3h8v21h-8l-4 3-4-3H4V6ZM16 9v21"/></svg></span><span>每天精读一本书<small>DAILY BOOKS</small></span></a>
+      <nav aria-label="主导航"><a href="#experience">阅读体验</a><a href="#discover">发现好书</a><a href="#about">关于项目</a></nav>
+      <a class="nav-cta" href="library.html">进入书库 <span aria-hidden="true">↗</span></a>
     </div>
   </header>
-
   <main id="main">
-    <section class="hero-section" id="heroSection">
-      <div class="loading-state">正在加载今日推荐…</div>
-    </section>
-
-    <section class="books-section" id="booksSection">
-      <div class="section-header">
-        <span class="section-label">ARCHIVE</span>
-        <h2 class="section-title">往期书单</h2>
-        <span class="archive-count" id="archiveCount"></span>
+    <section class="hero wrap" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <p class="eyebrow hero-reveal"><span class="live-dot"></span> 给每一个，保持好奇的你</p>
+        <h1 id="heroTitle" class="hero-reveal">把一本书，<br>读进<span class="title-accent">生活里<svg viewBox="0 0 360 22" preserveAspectRatio="none" aria-hidden="true"><path d="M4 15Q170-4 353 10M74 20Q230 5 338 16"/></svg></span>。</h1>
+        <p class="hero-description hero-reveal">不止于读过，更在于读懂。<br>精选好书、深度解读、AI 伴读，<br class="mobile-break">让一个好观点，成为生活里的小改变。</p>
+        <div class="hero-actions hero-reveal"><a class="button button-primary" href="library.html">开启今天的阅读 <span aria-hidden="true">↗</span></a><a class="text-link" href="#experience">看看如何开始 <span aria-hidden="true">↓</span></a></div>
+        <p class="hero-footnote hero-reveal"><span class="tiny-books" aria-hidden="true"><i></i><i></i><i></i></span> 无需注册 · 打开就能读</p>
       </div>
-
-      <div class="search-filter-bar">
-        <div class="search-box">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="6.5" cy="6.5" r="4.5"/>
-            <line x1="10" y1="10" x2="14" y2="14"/>
-          </svg>
-          <input type="text" id="searchInput" placeholder="搜索书名、作者、内容…" autocomplete="off" aria-label="搜索书籍">
-          <button class="search-clear" id="searchClear" aria-label="清除搜索">✕</button>
-        </div>
-        <div class="filter-chips" id="filterChips" role="toolbar" aria-label="分类筛选"></div>
-        <div class="filter-meta">
-          <span class="keyboard-hint">提示：按 <kbd>空格</kbd> 播放 · <kbd>R</kbd> 换一本 · <kbd>Esc</kbd> 关闭</span>
-        </div>
+      <div class="hero-art" id="bookScene" role="group" aria-label="以原子习惯为起点，探索精读笔记与今日行动">
+        <div class="scene-grid" aria-hidden="true"></div><div class="scene-orbit" aria-hidden="true"></div>
+        <span class="scene-caption" aria-hidden="true">A LITTLE READING. A BIGGER WORLD.</span>
+        <div class="scene-layer rear-book" data-depth="0.45" aria-hidden="true"><div class="rear-cover"><span>每天精读 / 005</span><strong>深度<br>工作</strong><small>DEEP WORK</small><div class="rear-lines"></div><p>把注意力，留给重要的事。</p></div></div>
+        <a class="scene-layer main-book" data-depth="1" href="library.html?book=3" aria-label="阅读《原子习惯》精读笔记"><div class="book-cover"><div class="book-topline"><span>DAILY BOOKS</span><span>003</span></div><span class="edition">精 读 笔 记</span><h2>原子习惯</h2><p class="book-english">ATOMIC<br>HABITS<span>James Clear</span></p><div class="habit-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="book-bottom"><span>微小改变，带来巨大成就</span><span>↗</span></div></div></a>
+        <div class="scene-layer idea-note" data-depth="1.4"><span class="note-icon" aria-hidden="true">✳</span><div><span class="note-label">从读懂，到做到</span><p>让好习惯，更容易发生。</p></div><span class="note-check" aria-hidden="true">✓</span></div>
+        <a class="scene-layer question-note" data-depth="1.8" href="library.html?book=3&action=ai"><span class="ai-icon" aria-hidden="true">✦</span><span><small>AI 伴读</small>如何开始我的第一个小习惯？</span><span aria-hidden="true">↗</span></a>
+        <span class="scene-bottom" aria-hidden="true"><span>01 / 让改变从一页开始</span><span>移动鼠标，探索一下 ↗</span></span>
       </div>
-
-      <div class="books-grid" id="booksGrid"></div>
-      <div class="empty-search" id="emptySearch" style="display:none">没有找到相关书籍</div>
     </section>
-
-    <!-- 关于区块 -->
-    <section class="about-section" id="aboutSection">
-      <div class="about-inner">
-        <div class="about-header">
-          <span class="section-label">ABOUT</span>
-          <h2 class="section-title">关于这个网站</h2>
+    <div class="reading-rail wrap"><span>好奇心，不设边界</span><div><span>认知与心理</span><b>✳</b><span>个人成长</span><b>✳</b><span>商业与创新</span><b>✳</b><span>哲学与思辨</span></div><a href="library.html#booksSection">探索更多 ↗</a></div>
+    <section class="experience wrap section-space" id="experience" aria-labelledby="experienceTitle">
+      <div class="section-heading" data-reveal><p class="eyebrow">LESS NOISE. MORE UNDERSTANDING.</p><h2 id="experienceTitle">阅读，可以再近一步。</h2><p>从“这本书讲什么”，到“这与我有什么关系”。</p></div>
+      <div class="experience-layout">
+        <div class="experience-tabs" role="tablist" aria-label="探索阅读体验" aria-orientation="vertical">
+          <button class="experience-tab" id="stepTab0" role="tab" aria-selected="true" aria-controls="experiencePanel" data-step="0"><span class="step-index">01</span><span><strong>读懂，值得留下的观点</strong><small>书评、核心要点与精读 PDF，把复杂的内容梳理清楚。</small></span><span class="step-arrow" aria-hidden="true">↗</span></button>
+          <button class="experience-tab" id="stepTab1" role="tab" aria-selected="false" aria-controls="experiencePanel" data-step="1" tabindex="-1"><span class="step-index">02</span><span><strong>追问，不止停在答案</strong><small>向当前书籍提问，沿着引用返回精读 PDF 核对。</small></span><span class="step-arrow" aria-hidden="true">↗</span></button>
+          <button class="experience-tab" id="stepTab2" role="tab" aria-selected="false" aria-controls="experiencePanel" data-step="2" tabindex="-1"><span class="step-index">03</span><span><strong>行动，让阅读真正发生</strong><small>从一条具体的行动建议开始，把新想法用在今天。</small></span><span class="step-arrow" aria-hidden="true">↗</span></button>
         </div>
-        <p class="about-text">
-          「每天精读一本书」是一个个人读书项目。我会从认知心理、个人成长、商业创新、金融经济等
-          跨学科书籍中精选一本，给出深度书评、核心要点与可执行的行动建议。
-        </p>
-        <p class="about-text">
-          网站本身也是一次「用 AI 工具辅助开发」的实践：从产品设计到前端实现，从内容整理到部署上线，全流程由 Claude Code 协助完成。
-        </p>
-
-        <div class="theme-section">
-          <div class="theme-section-title">选择主题</div>
-          <div class="theme-switcher" id="themeSwitcher"></div>
-        </div>
-
-        <div class="about-cta">
-          <a href="admin.html" class="about-link">📝 访客管理面板（添加书籍）→</a>
+        <div class="experience-stage" id="experiencePanel" role="tabpanel" aria-labelledby="stepTab0" tabindex="0">
+          <div class="stage-top"><span><i></i><i></i><i></i></span><small>DAILY BOOKS / 阅读体验示意</small><span aria-hidden="true">✦</span></div>
+          <div id="experienceContent" class="stage-content"><span class="demo-kicker">精读笔记 · 原子习惯</span><h3>改变，从小到不能再小开始。</h3><p>把目标拆成一个容易重复的动作，<br>让行动不再只依赖意志力。</p><div class="concept-row"><span>核心观点</span><span>案例理解</span><span>行动建议</span></div><div class="demo-line"></div><div class="demo-line short"></div><a href="library.html?book=3" class="demo-link">打开这本书的精读 ↗</a></div>
+          <div class="stage-bottom"><span>理解 · 提问 · 应用</span><span>与你自己的节奏同行</span></div>
         </div>
       </div>
     </section>
+    <section class="discover-section" id="discover" aria-labelledby="discoverTitle"><div class="wrap section-space">
+      <div class="section-heading heading-split" data-reveal><div><p class="eyebrow">FOLLOW YOUR CURIOSITY</p><h2 id="discoverTitle">下一本，从你的好奇开始。</h2><p>不必先列一张长书单。选一个此刻想探索的方向。</p></div><a class="text-link" href="library.html#booksSection">查看完整书库 <span aria-hidden="true">↗</span></a></div>
+      <div class="discovery-grid" id="discoveryGrid">
+        <a class="discovery-card" href="library.html?category=认知与心理"><span>01 / 认知与心理</span><h3>我们为什么<br>这样思考？</h3><p>认识思维，也重新认识自己。</p><span class="discovery-go">探索这个方向 ↗</span></a>
+        <a class="discovery-card" href="library.html?category=个人成长"><span>02 / 个人成长</span><h3>让每一天，<br>多一点可能。</h3><p>从微小的行动，开始真正的改变。</p><span class="discovery-go">探索这个方向 ↗</span></a>
+        <a class="discovery-card" href="library.html?category=商业与创新"><span>03 / 商业与创新</span><h3>换一个视角，<br>看世界运转。</h3><p>理解创新、价值与选择背后的逻辑。</p><span class="discovery-go">探索这个方向 ↗</span></a>
+      </div>
+      <div class="collection-note"><span id="collectionCount">精选跨学科好书，持续更新</span><span>每一份好奇，都值得被认真对待。</span></div>
+    </div></section>
+    <section class="about wrap section-space" id="about" aria-labelledby="aboutTitle">
+      <div class="about-mark" aria-hidden="true">“<span>A PERSONAL<br>READING PROJECT</span></div>
+      <div data-reveal><p class="eyebrow">关于这个小小的阅读计划</p><h2 id="aboutTitle">世界很快，<br>我们仍然可以认真读一本书。</h2><p>这是一个个人读书项目。把阅读中值得留下的观点整理出来，分享给同样好奇的你。没有打卡任务，也不必追赶别人的进度。</p><p>精读是通往一本书的入口，不是原作的替代。遇到真正打动你的观点，不妨继续读原书，也带着自己的经验去思考。</p><a class="text-link" href="library.html">愿这里，成为你常来的小书房 <span aria-hidden="true">↗</span></a></div>
+    </section>
+    <section class="closing"><div class="wrap"><span class="eyebrow">ONE BOOK. ONE NEW PERSPECTIVE.</span><h2>下一页，<br class="mobile-break">也许就有新的可能。</h2><a class="button button-light" href="library.html">挑一本，现在开始 <span aria-hidden="true">↗</span></a><p>无需注册，保持好奇就好。</p><span class="closing-star" aria-hidden="true">✳</span></div></section>
   </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p class="footer-brand">每天精读一本书</p>
-      <p class="footer-sub">每天一本，与智慧同行 · <span id="footerYear"></span></p>
-    </div>
-  </footer>
-
-  <script src="main.js"></script>
+  <footer class="footer wrap"><a class="footer-brand" href="index.html">每天精读一本书<span>给好奇心，一个栖息地。</span></a><div><a href="library.html">阅读书库 ↗</a><a href="#about">关于项目</a><span>© <span id="year">2026</span> Daily Books</span></div></footer>
 </body>
 </html>

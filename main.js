@@ -7,16 +7,16 @@
 /* ── 主题定义 ── */
 const THEMES = {
   default: {
-    name: '晨读·米色',
-    '--bg':            '#F4EFE6',
+    name: '晴日·靛蓝',
+    '--bg':            '#F7F8FA',
     '--card-bg':       '#FFFFFF',
     '--header-bg':     '#141410',
-    '--accent':        '#8B1A1A',
-    '--accent-light':  '#B52828',
-    '--text-primary':  '#1C1C1A',
-    '--text-secondary':'#6B6560',
-    '--text-light':    '#9B9590',
-    '--border':        '#E0D9CF',
+    '--accent':        '#304BD9',
+    '--accent-light':  '#4A65E8',
+    '--text-primary':  '#20232F',
+    '--text-secondary':'#646A79',
+    '--text-light':    '#747C8B',
+    '--border':        '#E0E3E9',
   },
   forest: {
     name: '林间·森绿',
@@ -86,7 +86,7 @@ function categoryTags(book) {
 function coverBackground(book, fallbackColor) {
   const coverUrl = book.cover || book.coverUrl;
   return coverUrl
-    ? `${fallbackColor} url('${coverUrl}') center / contain no-repeat`
+    ? `${fallbackColor} url('${siteAssetUrl(coverUrl)}') center / contain no-repeat`
     : fallbackColor;
 }
 
@@ -245,7 +245,7 @@ function renderHero(book) {
   const color = colorForId(book.id);
   section.innerHTML = `
     <div class="hero-eyebrow">
-      今日推荐
+      <span><b>NOW</b> 今日推荐</span>
       <button class="refresh-btn" onclick="refreshToday()" aria-label="换一本">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M14 8a6 6 0 1 1-1.76-4.24"/>
@@ -254,23 +254,30 @@ function renderHero(book) {
         换一本
       </button>
     </div>
-    <div class="hero-card" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
-      <div class="hero-color-block" style="background:${coverBackground(book, color)}">
+    <div class="hero-card" data-motion-card="hero">
+      <div class="hero-color-block ${(book.cover || book.coverUrl) ? 'has-cover' : ''}" style="background:${coverBackground(book, color)}" onclick="openDetailModal(${book.id})" role="button" tabindex="0" aria-label="阅读《${book.title}》" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetailModal(${book.id})}">
         <div class="hero-book-number">${String(book.id).padStart(2, '0')}</div>
         <div class="hero-tag">今日精读</div>
         <div class="hero-title-block">
           <div class="hero-book-title">${book.title}</div>
           <div class="hero-book-author">${book.originalTitle} · ${book.author}</div>
         </div>
+        <div class="hero-move-note" aria-hidden="true">MOVE TO EXPLORE</div>
       </div>
       <div class="hero-content">
         <div>
-          <div class="hero-section-label">每日书评</div>
+          <div class="hero-section-label"><span>每日书评</span><em>NO. ${String(book.id).padStart(2, '0')}</em></div>
+          <h3 class="hero-reading-title">${book.title}</h3>
+          <div class="hero-reading-author">${book.author}</div>
           <div class="hero-description"><p>${book.description}</p></div>
           <div class="hero-meta">
             <span class="hero-date">${formatDate(book.date)}</span>
             <div class="tag-chips">${tagsHtml(categoryTags(book))}</div>
           </div>
+          <button type="button" class="hero-open-cue" onclick="openDetailModal(${book.id})" aria-label="打开《${book.title}》完整精读">
+            <span>打开完整精读</span>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 10h13M11 5l5 5-5 5"/></svg>
+          </button>
         </div>
         <div class="hero-actions" onclick="event.stopPropagation()">
           ${audioPlayerHtml(book, 'hero-')}
@@ -280,12 +287,6 @@ function renderHero(book) {
         </div>
       </div>
     </div>`;
-  const card = section.querySelector('.hero-card');
-  if (card) {
-    card.style.animation = 'none';
-    card.offsetHeight;
-    card.style.animation = '';
-  }
 }
 
 /* ── 卡片（卡片本身也可点击展开详情） ── */
@@ -293,8 +294,8 @@ function bookCardHtml(book, i) {
   const color = colorForId(book.id);
   const delay = (i * 0.08).toFixed(2);
   return `
-    <div class="book-card" style="animation-delay:${delay}s" onclick="openDetailModal(${book.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openDetailModal(${book.id})">
-      <div class="card-color-block" style="background:${coverBackground(book, color)}">
+    <div class="book-card" data-motion-card="archive" data-card-index="${i}" style="animation-delay:${delay}s">
+      <div class="card-color-block ${(book.cover || book.coverUrl) ? 'has-cover' : ''}" style="background:${coverBackground(book, color)}" onclick="openDetailModal(${book.id})" role="button" tabindex="0" aria-label="阅读《${book.title}》" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetailModal(${book.id})}">
         <div class="card-book-index">${String(book.id).padStart(2, '0')}</div>
         <div class="card-title-in-block">
           <div class="card-book-title">${book.title}</div>
@@ -302,6 +303,8 @@ function bookCardHtml(book, i) {
         </div>
       </div>
       <div class="card-body">
+        <h3 class="library-book-title">${book.title}</h3>
+        <p class="library-book-author">${book.author}</p>
         <div class="card-date">${formatDate(book.date)}</div>
         <div class="card-description">${book.description}</div>
         <div class="card-tags">${tagsHtml(categoryTags(book), 'tag-chip')}</div>
@@ -328,8 +331,12 @@ function renderChunked(container, items, renderItem, opts = {}) {
       ? `<button type="button" class="chunk-toggle-btn" id="chunkToggle">▼ 显示下 ${Math.min(size, remaining)} 本（剩 ${remaining}）</button>`
       : '';
     container.innerHTML = html + btnHtml;
+    document.getElementById('visibleBookCount').textContent = `已展示 ${shown} / ${items.length} 本${remaining ? ' · 向下浏览可继续加载' : ''}`;
     const btn = document.getElementById('chunkToggle');
-    if (btn) btn.onclick = () => { shown = Math.min(shown + size, items.length); draw(); };
+    if (btn) btn.onclick = () => {
+      shown = Math.min(shown + size, items.length);
+      draw();
+    };
   };
   draw();
 }
@@ -337,6 +344,7 @@ function renderChunked(container, items, renderItem, opts = {}) {
 function renderArchive(books) {
   const grid = document.getElementById('booksGrid');
   if (!books.length) {
+    document.getElementById('visibleBookCount').textContent = '没有符合当前条件的书籍';
     grid.innerHTML = `
       <div class="empty-archive-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
         <div style="font-size:48px;margin-bottom:16px;opacity:0.4;">📚</div>
@@ -397,9 +405,29 @@ function applyFilter() {
   }
 
   renderArchive(filtered);
-  document.getElementById('archiveCount').textContent = `${filtered.length} 本`;
+  document.getElementById('archiveCount').textContent = `全库 ${_allBooks.length} 本`;
+  const isFiltered = Boolean(_activeCategory || _searchQuery);
+  document.getElementById('filterSummary').hidden = !isFiltered;
+  document.getElementById('filterSummaryText').textContent = `${_activeCategory ? `当前分类：${_activeCategory}` : '当前搜索'}${_searchQuery ? ` · 关键词「${_searchQuery}」` : ''}，找到 ${filtered.length} 本。全库仍有 ${_allBooks.length} 本可读。`;
+  document.getElementById('resetFilters').textContent = `查看全部 ${_allBooks.length} 本 ↗`;
+  const url = new URL(location.href);
+  if (_activeCategory) url.searchParams.set('category', _activeCategory);
+  else url.searchParams.delete('category');
+  history.replaceState(null, '', url);
   document.getElementById('emptySearch').style.display = 'none';
   document.getElementById('booksGrid').style.display = '';
+}
+
+function clearLibraryFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    const selected = chip.dataset.category === '';
+    chip.classList.toggle('active', selected);
+    chip.setAttribute('aria-pressed', String(selected));
+  });
+  applyFilter();
+  document.querySelector('.filter-chip.active')?.focus({ preventScroll: true });
 }
 
 function initSearch() {
@@ -418,15 +446,50 @@ function initSearch() {
 }
 
 /* ── 换一本 ── */
-function refreshToday() {
-  if (!_allBooks.length) return;
+let _bookChanging = false;
+async function refreshToday() {
+  if (!_allBooks.length || _bookChanging) return;
   const candidates = _allBooks.filter(b => b.id !== (_todayBook && _todayBook.id));
   if (!candidates.length) return;
   const pick = candidates[Math.floor(Math.random() * candidates.length)];
-  _todayBook = pick;
-  renderHero(pick);
-  bindKeyboardShortcuts();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const section = document.getElementById('heroSection');
+  const restoreFocus = document.activeElement === section.querySelector('.refresh-btn');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const animate = Boolean(window.gsap && !reduceMotion.matches);
+  let tween;
+  const finishMotion = () => tween?.progress(1);
+  _bookChanging = true;
+  section.setAttribute('aria-busy', 'true');
+  section.querySelector('.refresh-btn').disabled = true;
+  reduceMotion.addEventListener('change', finishMotion);
+  try {
+    if (animate) {
+      section.querySelector('.hero-card').inert = true;
+      await new Promise(resolve => {
+        tween = gsap.to(section.querySelector('.hero-card'), { autoAlpha: 0, y: -8, duration: 0.2, ease: 'power2.in', onComplete: resolve });
+      });
+    }
+    _todayBook = pick;
+    renderHero(pick);
+    section.querySelector('.refresh-btn').disabled = true;
+    if (animate && !reduceMotion.matches) {
+      const card = section.querySelector('.hero-card');
+      card.inert = true;
+      await new Promise(resolve => {
+        tween = gsap.fromTo(card, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.42, ease: 'power3.out', clearProps: 'transform,opacity,visibility', onComplete: resolve });
+      });
+      card.inert = false;
+    }
+    document.getElementById('bookChangeStatus').textContent = `已为你换成《${pick.title}》`;
+  } finally {
+    reduceMotion.removeEventListener('change', finishMotion);
+    section.removeAttribute('aria-busy');
+    section.querySelector('.hero-card').inert = false;
+    const button = section.querySelector('.refresh-btn');
+    button.disabled = false;
+    _bookChanging = false;
+    if (restoreFocus) button.focus({ preventScroll: true });
+  }
 }
 
 /* ──────────────────────────────────────
@@ -629,7 +692,7 @@ function openCompanion(bookId) {
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
           </button>
         </form>
-        <p class="companion-disclaimer">AI 可能理解有误，请以页码对应的 PDF 原文为准。</p>
+        <p class="companion-disclaimer">${['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) ? '本地预览：提问将通过本地服务发送至线上 AI 伴读接口。' : ''}AI 可能理解有误，请以页码对应的 PDF 原文为准。</p>
       </section>
     </div>`;
   document.body.appendChild(modal);
@@ -733,6 +796,9 @@ async function sendCompanionQuestion(event, bookId) {
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
+      if ([404, 405, 501].includes(response.status) && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) && !data.code) {
+        throw new Error('当前是纯静态预览，未启动 AI 接口。请在项目目录运行 npm run dev，再刷新页面提问。');
+      }
       throw new Error(data.error || 'AI 伴读暂时不可用，请稍后重试');
     }
 
@@ -871,11 +937,11 @@ function bindKeyboardShortcuts() {
 }
 
 function _keyboardHandler(e) {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'Escape') {
     closeAllModals();
     return;
   }
+  if (e.defaultPrevented || e.target.closest('input, textarea, button, a, [role="button"]')) return;
   if (e.key === ' ' || e.code === 'Space') {
     e.preventDefault();
     const player = document.querySelector('#heroSection .audio-player');
@@ -1183,12 +1249,13 @@ const BOOKS_DATA = [
   }
 ];;
 
+
 /* ──────────────────────────────────────
    初始化
    ────────────────────────────────────── */
 async function init() {
-  initTheme();
   renderThemeSwitcher();
+  initTheme();
 
   document.getElementById('headerDate').textContent =
     new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
@@ -1202,7 +1269,7 @@ async function init() {
   ];
   for (const source of dataSources) {
     try {
-      const resp = await fetch(source, { cache: 'no-store' });
+      const resp = await fetch(source, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
       if (!resp.ok) continue;
       const json = await resp.json();
       if (json.books && json.books.length) {
@@ -1220,13 +1287,29 @@ async function init() {
   const sorted = books.slice().sort((a, b) => b.date.localeCompare(a.date));
   const today = new Date().toISOString().slice(0, 10);
   _todayBook = sorted.find(b => b.date === today) || sorted[0];
-  _archiveBooks = sorted.filter(b => b.id !== _todayBook.id);
+  _archiveBooks = sorted;
 
   renderHero(_todayBook);
   renderFilterChips(_allBooks);
   initSearch();
+  const entry = new URLSearchParams(location.search);
+  const category = entry.get('category');
+  if (category && Array.from(document.querySelectorAll('.filter-chip')).some(chip => chip.dataset.category === category)) {
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      const selected = chip.dataset.category === category;
+      chip.classList.toggle('active', selected);
+      chip.setAttribute('aria-pressed', String(selected));
+    });
+  }
   applyFilter();
   bindKeyboardShortcuts();
+  const bookId = Number(entry.get('book'));
+  if (_allBooks.some(book => book.id === bookId)) {
+    if (entry.get('action') === 'ai') openCompanion(bookId);
+    else openDetailModal(bookId);
+  } else if (category || location.hash === '#booksSection') {
+    requestAnimationFrame(() => document.getElementById('booksSection').scrollIntoView({ behavior: 'instant' }));
+  }
 }
 
 init();
