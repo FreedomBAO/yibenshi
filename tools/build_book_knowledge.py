@@ -59,8 +59,8 @@ def local_pdf_path(book: dict) -> Path:
     return ROOT / "assets" / "pdfs" / filename
 
 
-def build_book(book: dict) -> dict:
-    pdf_path = local_pdf_path(book)
+def build_book(book: dict, pdf_path: Path | None = None) -> dict:
+    pdf_path = pdf_path or local_pdf_path(book)
     if not pdf_path.exists():
         raise FileNotFoundError(f"《{book['title']}》缺少 PDF：{pdf_path}")
 
@@ -88,8 +88,20 @@ def build_book(book: dict) -> dict:
 
 
 def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--book-id", type=int)
+    parser.add_argument("--pdf", type=Path)
+    args = parser.parse_args()
+    if (args.book_id is None) != (args.pdf is None):
+        parser.error("--book-id and --pdf must be supplied together")
     books = json.loads(DATA_PATH.read_text(encoding="utf-8"))["books"]
-    knowledge = {str(book["id"]): build_book(book) for book in books}
+    if args.book_id is not None:
+        knowledge = json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
+        book = next(book for book in books if book["id"] == args.book_id)
+        knowledge[str(book["id"])] = build_book(book, args.pdf)
+    else:
+        knowledge = {str(book["id"]): build_book(book) for book in books}
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(
         json.dumps(knowledge, ensure_ascii=False, separators=(",", ":")),
