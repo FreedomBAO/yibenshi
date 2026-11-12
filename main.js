@@ -1261,10 +1261,9 @@ async function init() {
     new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-  // 后台直接写入 GitHub；前端优先读取最新书库，部署内快照作为备用。
+  // 使用同一次部署内的目录和资源，避免 Git 提交领先于生产部署。
   let books = null;
   const dataSources = [
-    'https://raw.githubusercontent.com/FreedomBAO/yibenshi/main/data.json?_=' + Date.now(),
     'data.json?_=' + Date.now(),
   ];
   for (const source of dataSources) {

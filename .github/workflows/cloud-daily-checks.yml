@@ -1,0 +1,38 @@
+name: Cloud daily book checks
+on:
+  pull_request:
+    paths:
+      - 'tools/cloud_daily/**'
+      - 'tools/build_book_knowledge.py'
+      - 'tests/test_cloud_daily.py'
+      - '.github/workflows/cloud-daily-*.yml'
+      - '.github/workflows/daily-book.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-wqy-zenhei
+          python -m pip install -r tools/cloud_daily/requirements.txt
+          npm install --ignore-scripts --no-package-lock
+          npm test
+          python -m unittest discover -s tests -p test_cloud_daily.py -v
+          python -m tools.cloud_daily.selfcheck
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: offline-pdf-proof
+          retention-days: 7
+          path: _cloud_daily_work/offline-proof/

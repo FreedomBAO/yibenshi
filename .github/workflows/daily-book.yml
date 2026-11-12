@@ -1,0 +1,142 @@
+name: Daily book cloud pipeline
+
+on:
+  schedule:
+    # 02:00 Asia/Shanghai. GitHub schedules may be delayed.
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Upload and publish after all acceptance gates pass'
+        type: boolean
+        default: false
+
+concurrency:
+  group: daily-book-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  daily:
+    if: github.event_name == 'workflow_dispatch' || vars.ENABLE_DAILY_BOOKS == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    permissions:
+      contents: write
+    env:
+      PUBLISH: ${{ github.event_name == 'schedule' || inputs.publish }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+      VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+      GITHUB_TOKEN: ${{ github.token }}
+      DAILY_BOOK_MAX_USD: ${{ vars.DAILY_BOOK_MAX_USD || '0.50' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check configuration before any paid API call
+        shell: bash
+        run: |
+          if [ "$PUBLISH" = true ]; then
+            python -m tools.cloud_daily.release preflight --publish
+          else
+            python -m tools.cloud_daily.release preflight
+          fi
+      - name: Install PDF, font and browser dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-wqy-zenhei poppler-utils
+          python -m pip install -r tools/cloud_daily/requirements.txt
+          python -m playwright install --with-deps chromium
+          npm install --ignore-scripts --no-package-lock
+      - name: Generate and review all content and PDF pages
+        id: generate
+        run: |
+          python -m tools.cloud_daily.pipeline
+          python - <<'PY'
+          import json, os
+          state = json.load(open('_cloud_daily_work/state.json', encoding='utf-8'))
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write('noop=' + str(state.get('noop', False)).lower() + '\n')
+          PY
+      - name: Upload verified PDF and cover
+        if: env.PUBLISH == 'true' && steps.generate.outputs.noop != 'true'
+        run: node tools/cloud_daily/upload.mjs
+      - name: Prepare catalog and knowledge index
+        if: env.PUBLISH == 'true' && steps.generate.outputs.noop != 'true'
+        run: python -m tools.cloud_daily.release catalog
+      - name: Commit only accepted catalog and knowledge
+        id: commit
+        if: env.PUBLISH == 'true' && steps.generate.outputs.noop != 'true'
+        shell: bash
+        run: |
+          python -m tools.cloud_daily.release window
+          current=$(git rev-parse HEAD)
+          remote=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$current" = "$remote" || { echo 'Main changed during generation; publication stopped.'; exit 1; }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- data.json knowledge/books.json
+          git commit -m "content: publish validated daily book $(TZ=Asia/Shanghai date +%F)"
+          python -m tools.cloud_daily.release window
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Request production deployment
+        id: deploy
+        if: steps.commit.outputs.sha != ''
+        continue-on-error: true
+        run: python -m tools.cloud_daily.release deploy
+      - name: Verify actual production website, assets and RAG
+        id: verify
+        if: steps.deploy.outcome == 'success'
+        continue-on-error: true
+        run: python -m tools.cloud_daily.release verify
+      - name: Revert only this publication if production checks fail
+        if: always() && steps.commit.outputs.sha != '' && (steps.deploy.outcome == 'failure' || steps.verify.outcome == 'failure')
+        env:
+          PUBLISHED_SHA: ${{ steps.commit.outputs.sha }}
+        shell: bash
+        run: |
+          python -m tools.cloud_daily.release window --rollback
+          remote=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$remote" = "$PUBLISHED_SHA" || { echo 'Main changed; automatic revert stopped for manual resolution.'; exit 1; }
+          git revert --no-edit "$PUBLISHED_SHA"
+          git push origin HEAD:main
+          python -m tools.cloud_daily.release deploy --rollback
+      - name: Keep failed deployment visible as a failed run
+        if: always() && (steps.deploy.outcome == 'failure' || steps.verify.outcome == 'failure')
+        run: exit 1
+      - name: Save reviewable artifacts without credentials or fetched page bodies
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-book-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: ignore
+          path: |
+            _cloud_daily_work/*.json
+            _cloud_daily_work/*.md
+            _cloud_daily_work/book.pdf
+            _cloud_daily_work/book.cover.jpg
+            _cloud_daily_work/production.png
+      - name: Run summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          state = Path('_cloud_daily_work/state.json')
+          data = json.loads(state.read_text(encoding='utf-8')) if state.exists() else {'stage':'preflight'}
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('Stage: ' + data.get('stage', 'unknown') + '\n\n')
+              out.write('Only a run with state succeeded and acceptance.passed=true is published and verified.\n')
+          PY

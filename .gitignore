@@ -1,4 +1,6 @@
 node_modules/
+_cloud_daily_work/
+.venv-cloud/
 .pnpm-store/
 .claude/
 *.local
